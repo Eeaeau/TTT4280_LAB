@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from numpy.core.fromnumeric import shape
 import scipy.signal as signal
 
 
@@ -31,6 +32,7 @@ t = np.linspace(start=0, stop=num_of_samples*sample_period, num=num_of_samples)
 freq = np.fft.fftfreq(n=num_of_samples, d=sample_period)
 spectrum = np.fft.fft(data, axis=0)  # takes FFT of all channels
 
+print(shape(data[:,2]))
 
 # Plot the results in two subplots
 # NOTICE: This lazily plots the entire matrixes. All the channels will be put into the same plots.
@@ -39,7 +41,7 @@ plt.subplot(2, 1, 1)
 plt.title("Time domain signal")
 plt.xlabel("Time [us]")
 plt.ylabel("Voltage")
-plt.plot(t, data[:,1])
+plt.plot(t, data[:,2])
 
 plt.subplot(2, 1, 2)
 plt.title("Power spectrum of signal")
