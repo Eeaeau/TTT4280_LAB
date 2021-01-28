@@ -20,7 +20,7 @@ def raspi_import(path, channels=4):
 # Import data from bin file
 sample_period, data = raspi_import('export/measurement.bin')
 
-#data = signal.detrend(data, axis=0)  # removes DC component for each channel
+# data = signal.detrend(data, axis=0)  # removes DC component for each channel
 sample_period *= 1e-6  # change unit to micro seconds
 
 # Generate time axis
@@ -39,12 +39,12 @@ plt.subplot(2, 1, 1)
 plt.title("Time domain signal")
 plt.xlabel("Time [us]")
 plt.ylabel("Voltage")
-plt.plot(t, data)
+plt.plot(t, data[:,1])
 
 plt.subplot(2, 1, 2)
 plt.title("Power spectrum of signal")
 plt.xlabel("Frequency [Hz]")
 plt.ylabel("Power [dB]")
-plt.plot(freq, 20*np.log(np.abs(spectrum))) # get the power spectrum
+plt.plot(freq, 20*np.log(np.abs(spectrum[:,1]))) # get the power spectrum
 
 plt.show()
