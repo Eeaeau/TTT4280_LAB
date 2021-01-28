@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import scipy.signal as signal
 
 
-def raspi_import(path, channels=5):
+def raspi_import(path, channels=4):
     """
     Import data produced using adc_sampler.c.
     Returns sample period and ndarray with one column per channel.
@@ -18,7 +18,7 @@ def raspi_import(path, channels=5):
 
 
 # Import data from bin file
-sample_period, data = raspi_import('adcData.bin')
+sample_period, data = raspi_import('export/measurement.bin')
 
 #data = signal.detrend(data, axis=0)  # removes DC component for each channel
 sample_period *= 1e-6  # change unit to micro seconds
