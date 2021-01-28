@@ -233,10 +233,12 @@ int main(int argc, char *argv[])
 
     double output_nominal_period_us = floor(nominal_period_us); //the clock is accurate only to us resolution
 
+    printf("this is a test at 236");
+
     // Path to your data directory/file from previous define
     const char *output_filename = OUTPUT_DATA;
 
-    printf("this is a test at 239");
+    printf("this is a test at 241");
 
     // Write sample period and data to file
     FILE *adc_data_file = fopen(output_filename, "wb+");
