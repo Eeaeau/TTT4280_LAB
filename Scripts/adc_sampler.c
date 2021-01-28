@@ -39,6 +39,8 @@ channel ADC without need for any input to initiate sampling.
 // #define OUTPUT_DATA argv[2] // path and filename to dump buffered ADC data
 #define OUTPUT_DATA "/home/pi/Documents/Git/TTT4280_LAB/Scripts/export/measurement.bin" // path and filename to dump buffered ADC data
 
+printf(OUTPUT_DATA)
+
 /* RPi PIN ASSIGNMENTS */
 #define MISO1 40    // ADC 1 MISO (BCM 4 aka GPIO 21).
 #define MISO2 15    //     2
