@@ -40,14 +40,14 @@ channel ADC without need for any input to initiate sampling.
 #define OUTPUT_DATA "/home/pi/Documents/Git/TTT4280_LAB/Scripts/export/measurement.bin" // path and filename to dump buffered ADC data
 
 /* RPi PIN ASSIGNMENTS */
-// #define MISO1 40    // ADC 1 MISO (BCM 4 aka GPIO 21).
-// #define MISO2 15    //     2
-// #define MISO3 16    //     3
-// #define MISO4 18    //     4
-#define MISO1 21    // ADC 1 MISO (BCM 4 aka GPIO 21).
-#define MISO2 22    //     2
-#define MISO3 23    //     3
-#define MISO4 24    //     4
+#define MISO1 40    // ADC 1 MISO (BCM 4 aka GPIO 21).
+#define MISO2 15    //     2
+#define MISO3 16    //     3
+#define MISO4 18    //     4
+// #define MISO1 21    // ADC 1 MISO (BCM 4 aka GPIO 21).
+// #define MISO2 22    //     2
+// #define MISO3 23    //     3
+// #define MISO4 24    //     4
 // #define MISO5 21    //     5
 
 #define MOSI 10     // GPIO for SPI MOSI (BCM 10 aka GPIO 10 aka SPI_MOSI). MOSI not in use here due to single ch. ADCs, but must be defined anyway.
