@@ -236,7 +236,7 @@ int main(int argc, char *argv[])
     // Path to your data directory/file from previous define
     const char *output_filename = OUTPUT_DATA;
 
-    printf(output_filename);
+    printf(output_filename[0]);
 
     // Write sample period and data to file
     FILE *adc_data_file = fopen(output_filename, "wb+");
