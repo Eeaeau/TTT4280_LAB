@@ -39,7 +39,7 @@ channel ADC without need for any input to initiate sampling.
 // #define OUTPUT_DATA argv[2] // path and filename to dump buffered ADC data
 #define OUTPUT_DATA "/home/pi/Documents/Git/TTT4280_LAB/Scripts/export/measurement.bin" // path and filename to dump buffered ADC data
 
-printf(OUTPUT_DATA)
+printf(OUTPUT_DATA);
 
 /* RPi PIN ASSIGNMENTS */
 #define MISO1 40    // ADC 1 MISO (BCM 4 aka GPIO 21).
@@ -234,6 +234,8 @@ int main(int argc, char *argv[])
 
     // Path to your data directory/file from previous define
     const char *output_filename = OUTPUT_DATA;
+
+    printf(output_filename);
 
     // Write sample period and data to file
     FILE *adc_data_file = fopen(output_filename, "wb+");
