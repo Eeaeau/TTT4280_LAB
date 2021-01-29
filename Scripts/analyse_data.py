@@ -45,7 +45,7 @@ plt.title("Time domain signal")
 plt.xlabel("Time [us]")
 plt.ylabel("Voltage")
 plt.grid(True)
-plt.xlim(0, .01)
+plt.xlim(0, .005)
 # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
 plt.plot(t, data)
 # 1VA+1V 2.54Vdd, 500Hz
