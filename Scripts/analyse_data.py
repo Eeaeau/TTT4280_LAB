@@ -37,16 +37,25 @@ print(shape(data[:,2]))
 # Plot the results in two subplots
 # NOTICE: This lazily plots the entire matrixes. All the channels will be put into the same plots.
 # If you want a single channel, use data[:,n] to get channel n
-plt.subplot(3, 1, 1)
+# fig = plt.figure(figsize=(16/2.5, 9/2.5))
+
+
+plt.subplot(2, 1, 1)
 plt.title("Time domain signal")
 plt.xlabel("Time [us]")
 plt.ylabel("Voltage")
-plt.plot(t, data[:,0])
+plt.grid(True)
+plt.xlim(0, .01)
+plt.plot(t, data)
+# 1VA+1V 2.54Vdd, 500Hz
+plt.legend(["Ch1@$0.993V$", "Ch2@$0.689V$","Ch3@$0.386V$", "Ch4@$11.6mV$"])
 
-plt.subplot(3, 1, 2)
+
+plt.subplot(2, 1, 2)
 plt.title("Power spectrum of signal")
 plt.xlabel("Frequency [Hz]")
 plt.ylabel("Power [dB]")
-plt.plot(freq, 20*np.log(np.abs(spectrum[:,0]))) # get the power spectrum
-
+plt.plot(freq, 20*np.log(np.abs(spectrum))) # get the power spectrum
+plt.legend(["Ch1@$0.993V$", "Ch2@$0.689V$","Ch3@$0.386V$", "Ch4@$11.6mV$"])
+plt.tight_layout()
 plt.show()
