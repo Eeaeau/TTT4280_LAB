@@ -21,7 +21,7 @@ def raspi_import(path, channels=4):
 # Import data from bin file
 sample_period, data = raspi_import('export/measurement.bin')
 
-# data = signal.detrend(data, axis=0)  # removes DC component for each channel
+data = signal.detrend(data, axis=0)  # removes DC component for each channel
 sample_period *= 1e-6  # change unit to micro seconds
 
 # Generate time axis
@@ -46,6 +46,7 @@ plt.xlabel("Time [us]")
 plt.ylabel("Voltage")
 plt.grid(True)
 plt.xlim(0, .01)
+# plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
 plt.plot(t, data)
 # 1VA+1V 2.54Vdd, 500Hz
 plt.legend(["Ch1@$0.993V$", "Ch2@$0.689V$","Ch3@$0.386V$", "Ch4@$11.6mV$"])
