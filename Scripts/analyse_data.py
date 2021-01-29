@@ -56,6 +56,7 @@ plt.subplot(2, 1, 2)
 plt.title("Power spectrum of signal")
 plt.xlabel("Frequency [Hz]")
 plt.ylabel("Power [dB]")
+plt.xlim(-2000, 2000)
 plt.plot(freq, 20*np.log(np.abs(spectrum))) # get the power spectrum
 plt.legend(["Ch1@$0.993V$", "Ch2@$0.689V$","Ch3@$0.386V$", "Ch4@$11.6mV$"])
 plt.tight_layout()
