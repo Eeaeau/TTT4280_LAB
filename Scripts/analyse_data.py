@@ -21,7 +21,7 @@ def raspi_import(path, channels=4):
 # Import data from bin file
 sample_period, data = raspi_import('export/measurement.bin')
 
-data = signal.detrend(data, axis=0)  # removes DC component for each channel
+# data = signal.detrend(data, axis=0)  # removes DC component for each channel
 sample_period *= 1e-6  # change unit to micro seconds
 
 # Generate time axis
