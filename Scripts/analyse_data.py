@@ -19,6 +19,19 @@ def raspi_import(path, channels=4):
         data = data.reshape((-1, channels))
     return sample_period, data
 
+def bandpass_transferfunc(low_freq, high_freq, f_s, order):
+    #nyquist = fs/2
+
+    b, a= signal.butter(order, [low_freq, high_freq], 'bandpass', analog=True, output='ba', fs=f_s)
+
+    return b, a
+
+def bandpass_filtering(data, low_cutfreq, high_cutfreq, fs, order):
+    
+    b, a = bandpass_transferfunc(low_cutfreq, high_cutfreq,fs,order)
+
+    filtered_data = signal.lfilter(b, a, data)
+
 
 # Import data from bin file
 sample_period, data = raspi_import('export/measurement.bin', channels)
