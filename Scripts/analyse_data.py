@@ -61,9 +61,9 @@ plt.ylabel("Voltage")
 plt.grid(True)
 plt.xlim(0, .02)
 # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
-plt.plot(t, data[:, :3])
+plt.plot(t, data_fixed)
 # 1VA+1V 2.54Vdd, 500Hz
-plt.legend(["Ch1@$0.993V$", "Ch2@$0.689V$", "Ch3@$0.386V$"])
+plt.legend(["Ch1", "Ch2", "Ch3"])
 
 
 plt.subplot(2, 1, 2)
