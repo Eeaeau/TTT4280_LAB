@@ -50,7 +50,7 @@ data_fixed = np.empty([channels, num_of_samples - elements_removed])
 for i in range(channels):
     data_fixed[i] = data[:, i][elements_removed:]
     # data_fixed[i] = i
-print("Fixed", data_fixed)
+print("Fixed", data_fixed.shape)
 
 # print(data[:, 0])
 
@@ -61,7 +61,7 @@ plt.ylabel("Voltage")
 plt.grid(True)
 plt.xlim(0, .02)
 # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
-plt.plot(t, data_fixed)
+plt.plot(t[elements_removed:], data_fixed)
 # 1VA+1V 2.54Vdd, 500Hz
 plt.legend(["Ch1", "Ch2", "Ch3"])
 
