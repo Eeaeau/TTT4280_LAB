@@ -4,7 +4,7 @@ from numpy.core.fromnumeric import shape
 import scipy.signal as signal
 
 
-def raspi_import(path, channels=4):
+def raspi_import(path, channels=3):
     """
     Import data produced using adc_sampler.c.
     Returns sample period and ndarray with one column per channel.
@@ -32,7 +32,7 @@ t = np.linspace(start=0, stop=num_of_samples*sample_period, num=num_of_samples)
 freq = np.fft.fftfreq(n=num_of_samples, d=sample_period)
 spectrum = np.fft.fft(data, axis=0)  # takes FFT of all channels
 
-print(shape(data[:,2]))
+# print(shape(data[:, 2]))
 
 # Plot the results in two subplots
 # NOTICE: This lazily plots the entire matrixes. All the channels will be put into the same plots.
@@ -49,7 +49,7 @@ plt.xlim(0, .005)
 # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
 plt.plot(t, data)
 # 1VA+1V 2.54Vdd, 500Hz
-plt.legend(["Ch1@$0.993V$", "Ch2@$0.689V$","Ch3@$0.386V$", "Ch4@$11.6mV$"])
+plt.legend(["Ch1@$0.993V$", "Ch2@$0.689V$", "Ch3@$0.386V$"])
 
 
 plt.subplot(2, 1, 2)
@@ -57,7 +57,7 @@ plt.title("Power spectrum of signal")
 plt.xlabel("Frequency [Hz]")
 plt.ylabel("Power [dB]")
 plt.xlim(-2000, 2000)
-plt.plot(freq, 20*np.log(np.abs(spectrum))) # get the power spectrum
-plt.legend(["Ch1@$0.993V$", "Ch2@$0.689V$","Ch3@$0.386V$", "Ch4@$11.6mV$"])
+plt.plot(freq, 20*np.log(np.abs(spectrum)))  # get the power spectrum
+plt.legend(["Ch1@$0.993V$", "Ch2@$0.689V$", "Ch3@$0.386V$"])
 plt.tight_layout()
 plt.show()
