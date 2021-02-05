@@ -4,7 +4,7 @@ from numpy.core.fromnumeric import shape
 import scipy.signal as signal
 
 
-def raspi_import(path, channels=3):
+def raspi_import(path, channels=4):
     """
     Import data produced using adc_sampler.c.
     Returns sample period and ndarray with one column per channel.
@@ -45,9 +45,9 @@ plt.title("Time domain signal")
 plt.xlabel("Time [us]")
 plt.ylabel("Voltage")
 plt.grid(True)
-plt.xlim(0, .005)
+plt.xlim(0.01, .02)
 # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
-plt.plot(t, data)
+plt.plot(t, data[:, :3])
 # 1VA+1V 2.54Vdd, 500Hz
 plt.legend(["Ch1@$0.993V$", "Ch2@$0.689V$", "Ch3@$0.386V$"])
 
@@ -58,6 +58,6 @@ plt.xlabel("Frequency [Hz]")
 plt.ylabel("Power [dB]")
 plt.xlim(-2000, 2000)
 plt.plot(freq, 20*np.log(np.abs(spectrum)))  # get the power spectrum
-plt.legend(["Ch1@$0.993V$", "Ch2@$0.689V$", "Ch3@$0.386V$"])
+plt.legend(["Ch1$", "Ch2$", "Ch3$"])
 plt.tight_layout()
 plt.show()
