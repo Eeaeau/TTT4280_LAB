@@ -19,16 +19,19 @@ def raspi_import(path, channels=4):
         data = data.reshape((-1, channels))
     return sample_period, data
 
+
 def bandpass_transferfunc(low_freq, high_freq, f_s, order):
     #nyquist = fs/2
 
-    b, a= signal.butter(order, [low_freq, high_freq], 'bandpass', analog=True, output='ba', fs=f_s)
+    b, a = signal.butter(order, [low_freq, high_freq],
+                         'bandpass', analog=True, output='ba', fs=f_s)
 
     return b, a
 
+
 def bandpass_filtering(data, low_cutfreq, high_cutfreq, fs, order):
-    
-    b, a = bandpass_transferfunc(low_cutfreq, high_cutfreq,fs,order)
+
+    b, a = bandpass_transferfunc(low_cutfreq, high_cutfreq, fs, order)
 
     filtered_data = signal.lfilter(b, a, data)
 
@@ -58,14 +61,19 @@ spectrum = np.fft.fft(data, axis=0)  # takes FFT of all channels
 # fig = plt.figure(figsize=(16/2.5, 9/2.5))
 
 elements_removed = 100
+num_interp_samples = 2**12
 
 data_fixed = np.empty([channels, num_of_samples - elements_removed])
-
+data_interp = np.empty([channels, num_interp_samples])
+x = np.linspace(0, 1, num_interp_samples)
 
 for i in range(channels):
     data_fixed[i] = data[:, i][elements_removed:]
+    data_interp[i] = np.interp(x, t[elements_removed:], data_fixed[i])
+
     # data_fixed[i] = i
 print("Fixed", data_fixed.shape)
+print("interp", data_interp.shape)
 
 # print(data[:, 0])
 
