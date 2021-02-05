@@ -31,6 +31,8 @@ sample_period *= 1e-6  # change unit to micro seconds
 num_of_samples = data.shape[0]  # returns shape of matrix
 t = np.linspace(start=0, stop=num_of_samples*sample_period, num=num_of_samples)
 
+print(t.shape)
+
 # Generate frequency axis and take FFT
 freq = np.fft.fftfreq(n=num_of_samples, d=sample_period)
 spectrum = np.fft.fft(data, axis=0)  # takes FFT of all channels
@@ -61,7 +63,7 @@ plt.ylabel("Voltage")
 plt.grid(True)
 plt.xlim(0, .02)
 # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
-plt.plot(t[elements_removed:], data_fixed)
+plt.plot(t[elements_removed:], data_fixed[0])
 # 1VA+1V 2.54Vdd, 500Hz
 plt.legend(["Ch1", "Ch2", "Ch3"])
 
