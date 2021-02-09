@@ -20,20 +20,33 @@ def raspi_import(path, channels=4):
     return sample_period, data
 
 
-def bandpass_transferfunc(low_freq, high_freq, f_s, order):
+# Generates a normalized frequency
+def convertFrequency(T_sample, f):
     #nyquist = fs/2
+    omega = 2*f*T_sample
 
-    b, a = signal.butter(order, [low_freq, high_freq],
-                         'bandpass', analog=True, output='ba', fs=f_s)
+    return omega
+
+
+def bandpass_transferfunc(low_freq, high_freq, T_sample, order):
+
+    omega = []
+    omega.append(convertFrequency(T_sample, low_freq))
+    omega.append(convertFrequency(T_sample, high_freq))
+
+    b, a = signal.butter(order, omega, btype='band', analog=False, output='ba')
 
     return b, a
 
+def bandpass_filtering(data, low_cutfreq, high_cutfreq, T_sample, order):
+    
+    b, a = bandpass_transferfunc(low_cutfreq, high_cutfreq, T_sample, order)
 
-def bandpass_filtering(data, low_cutfreq, high_cutfreq, fs, order):
+    filtered_data = signal.filtfilt(b, a, data)
+    #filtered_data = signal.lfilter(b, a, data)
 
-    b, a = bandpass_transferfunc(low_cutfreq, high_cutfreq, fs, order)
+    return filtered_data
 
-    filtered_data = signal.lfilter(b, a, data)
 
 
 # Import data from bin file
@@ -48,6 +61,10 @@ num_of_samples = data.shape[0]  # returns shape of matrix
 t = np.linspace(start=0, stop=num_of_samples*sample_period, num=num_of_samples)
 
 print(t.shape)
+
+# Unwanted noise is filtered from the signals
+#for i in range(channels):
+ #   data[:,i] = bandpass_filtering(data[:,i], 400, 600, sample_period, 3)
 
 # define new constants
 elements_removed = 100
