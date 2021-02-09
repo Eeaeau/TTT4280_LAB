@@ -144,7 +144,7 @@ plt.show()
 def find_delay (a, b, Fs):
     cross_corr = np.correlate(a, b)
     cross_corr_max = np.max(np.abs(cross_corr)) 
-    return cross_corr_max/Fs
+    return np.where(cross_corr == cross_corr_max)
 
 print(find_delay(data_interp[0], data_interp[1], int(1/sample_period_interp)))
 
