@@ -176,6 +176,11 @@ for i in range(channels):
 
 print(n["21"])
 
+def find_angle(x21, x31, x32):
+    return np.arctan2(np.sqrt(3)*(x21+x31), x21-x31-2*x32)
+
+print(find_angle(n["21"], n["31"], n["32"]))
+
 #plt.subplot(2, 1, 2)
 #plt.title("Power spectrum of signal")
 #plt.xlabel("Frequency [Hz]")
