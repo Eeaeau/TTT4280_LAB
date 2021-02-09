@@ -49,19 +49,15 @@ t = np.linspace(start=0, stop=num_of_samples*sample_period, num=num_of_samples)
 
 print(t.shape)
 
-# Generate frequency axis and take FFT
-freq = np.fft.fftfreq(n=num_of_samples, d=sample_period)
-spectrum = np.fft.fft(data, axis=0)  # takes FFT of all channels
-
-# print(shape(data[:, 2]))
-
-# Plot the results in two subplots
-# NOTICE: This lazily plots the entire matrixes. All the channels will be put into the same plots.
-# If you want a single channel, use data[:,n] to get channel n
-# fig = plt.figure(figsize=(16/2.5, 9/2.5))
-
+# define new constants
 elements_removed = 100
 num_interp_samples = 2**12
+
+num_of_samples_fixed = num_of_samples - elements_removed
+
+interp_sample_period = (1-sample_period*elements_removed)/num_interp_samples
+
+t_interp = np.linspace(start=0, stop=num_interp_samples*interp_sample_period, num=num_interp_samples)
 
 data_fixed = np.empty([channels, num_of_samples - elements_removed])
 data_interp = np.empty([channels, num_interp_samples])
@@ -75,6 +71,19 @@ for i in range(channels):
 print("Fixed", data_fixed.shape)
 print("interp", data_interp.shape)
 
+
+# Generate frequency axis and take FFT
+freq = np.fft.fftfreq(n=num_interp_samples, d=interp_sample_period)
+spectrum = np.fft.fft(data_interp, axis=0)  # takes FFT of all channels
+
+print(freq.shape, spectrum.shape )
+
+# Plot the results in two subplots
+# NOTICE: This lazily plots the entire matrixes. All the channels will be put into the same plots.
+# If you want a single channel, use data[:,n] to get channel n
+# fig = plt.figure(figsize=(16/2.5, 9/2.5))
+
+
 # print(data[:, 0])
 
 plt.subplot(2, 1, 1)
@@ -84,7 +93,7 @@ plt.ylabel("Voltage")
 plt.grid(True)
 plt.xlim(0, .02)
 # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
-plt.plot(t[elements_removed:], data_fixed[0])
+plt.plot(t_interp, data_interp[0])
 # 1VA+1V 2.54Vdd, 500Hz
 plt.legend(["Ch1", "Ch2", "Ch3"])
 
@@ -94,7 +103,7 @@ plt.title("Power spectrum of signal")
 plt.xlabel("Frequency [Hz]")
 plt.ylabel("Power [dB]")
 plt.xlim(-1000, 1000)
-plt.plot(freq, 20*np.log(np.abs(spectrum)))  # get the power spectrum
+plt.plot(freq, 20*np.log(np.abs(spectrum[0])))  # get the power spectrum
 plt.legend(["Ch1$", "Ch2$", "Ch3$"])
 plt.tight_layout()
 plt.show()
