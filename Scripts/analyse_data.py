@@ -141,7 +141,7 @@ plt.show()
 # ----------------- find angle 
 
 
-def find_delay (a, b):
+def find_lag (a, b):
     cross_corr = np.correlate(a, b, "full")
     print(cross_corr)
     cross_corr = np.flip(cross_corr, 0)
@@ -152,13 +152,13 @@ def find_delay (a, b):
 
 
 
-print(find_delay(data_interp[0], data_interp[1]))
+print(find_lag(data_interp[0], data_interp[1]))
 
 n = {}
 
 # n[""]
 
-# def find_delay2(a,b):
+# def find_lag2(a,b):
 #     cross_corr = np.correlate(a, b)
 #     cross_corr_max = np.max(np.abs(cross_corr)) 
 #     sample_delay = (np.abs(cross_corr)).index(cross_corr_max)
@@ -168,7 +168,7 @@ n = {}
 testa = [1, 0, 0, 0, 0, 0, 0, 0]
 testb = [1, 0, 0, 0, 0, 0, 0, 0]
 
-print("Delaytest", find_delay(testa,testb))
+print("Delaytest", find_lag(testa,testb))
 
 #plt.subplot(2, 1, 2)
 #plt.title("Power spectrum of signal")
