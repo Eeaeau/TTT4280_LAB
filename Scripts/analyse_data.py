@@ -126,11 +126,11 @@ plt.legend(["Ch1", "Ch2", "Ch3"])
 
 # ---------------------- auto corr
 crosscor_12 = abs(np.correlate(data_interp[0], data_interp[1], mode="full"))
-print(crosscor_12.shape)
+print(crosscor_12)
 
 plt.subplot(2, 1, 2)
 plt.title("Cross correlation")
-plt.xlabel("Time")
+plt.xlabel("n")
 plt.ylabel("Cross correlation")
 plt.grid(True)
 plt.plot(range(-int(len(crosscor_12)/2), int(len(crosscor_12)/2)+1), crosscor_12)  # get the power spectrum
@@ -142,25 +142,31 @@ plt.show()
 
 
 def find_delay (a, b):
-    cross_corr = np.correlate(a, b)
-    cross_corr_max = np.max(np.abs(cross_corr)) 
-    return np.where(cross_corr == cross_corr_max)[0][0]
+    cross_corr = np.correlate(a, b, "full")
+    print(cross_corr)
+    cross_corr = np.flip(cross_corr, 0)
+    plt.stem(cross_corr)
+    plt.show()
+    cross_corr_max = np.argmax(np.abs(cross_corr), axis=0)
+    return cross_corr_max-len(a)+1
 
-# print(find_delay(data_interp[0], data_interp[1], int(1/sample_period_interp)))
+
+
+print(find_delay(data_interp[0], data_interp[1]))
 
 n = {}
 
 # n[""]
 
-def find_delay2(a,b):
-    cross_corr = np.correlate(a, b)
-    cross_corr_max = np.max(np.abs(cross_corr)) 
-    sample_delay = (np.abs(cross_corr)).index(cross_corr_max)
-    #time_delay = sample_delay/f_s
-    return sample_delay#, time_delay
+# def find_delay2(a,b):
+#     cross_corr = np.correlate(a, b)
+#     cross_corr_max = np.max(np.abs(cross_corr)) 
+#     sample_delay = (np.abs(cross_corr)).index(cross_corr_max)
+#     #time_delay = sample_delay/f_s
+#     return sample_delay#, time_delay
 
-testa = [1, 2, 3, 4, 5]
-testb = [0, 0, 1, 2, 3, 4, 5]
+testa = [1, 0, 0, 0, 0, 0, 0, 0]
+testb = [1, 0, 0, 0, 0, 0, 0, 0]
 
 print("Delaytest", find_delay(testa,testb))
 
