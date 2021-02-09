@@ -125,14 +125,25 @@ for i in range(channels):
 # 1VA+1V 2.54Vdd, 500Hz
 plt.legend(["Ch1", "Ch2", "Ch3"])
 
-
+crosscor_12 = np.correlate(data_interp[:,0], data_interp[:,1], mode='full')
 plt.subplot(2, 1, 2)
-plt.title("Power spectrum of signal")
-plt.xlabel("Frequency [Hz]")
-plt.ylabel("Power [dB]")
-plt.xlim(-1000, 1000)
-for i in range(channels-1):
-    plt.plot(freq, 20*np.log(np.abs(spectrum[i])))  # get the power spectrum
-plt.legend(["Ch1", "Ch2", "Ch3"])
+plt.title("Cross correlation")
+plt.xlabel("Time")
+plt.ylabel("Cross correlation")
+plt.grid(True)
+plt.plot(crosscor_12)  # get the power spectrum
+plt.legend(["krysskorr12"])
 plt.tight_layout()
 plt.show()
+
+
+#plt.subplot(2, 1, 2)
+#plt.title("Power spectrum of signal")
+#plt.xlabel("Frequency [Hz]")
+#plt.ylabel("Power [dB]")
+#plt.xlim(-1000, 1000)
+#for i in range(channels-1):
+ #   plt.plot(freq, 20*np.log(np.abs(spectrum[i])))  # get the power spectrum
+#plt.legend(["Ch1", "Ch2", "Ch3"])
+#plt.tight_layout()
+#plt.show()
