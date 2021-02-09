@@ -60,7 +60,7 @@ sample_period *= 1e-6  # change unit to micro seconds
 num_of_samples = data.shape[0]  # returns shape of matrix
 t = np.linspace(start=0, stop=num_of_samples*sample_period, num=num_of_samples)
 
-print(t.shape)
+# print(t.shape)
 
 # Unwanted noise is filtered from the signals
 #for i in range(channels):
@@ -70,10 +70,9 @@ print(t.shape)
 elements_removed = 4000
 num_interp_samples = 2**15
 num_of_samples_fixed = num_of_samples - elements_removed
-
-
 sample_period_interp = (1-sample_period*elements_removed)/num_interp_samples
 
+# define new time array 
 t_interp = np.linspace(start=0, stop=num_interp_samples*sample_period_interp, num=num_interp_samples)
 
 print(len(t))
@@ -118,23 +117,39 @@ plt.title("Time domain signal")
 plt.xlabel("Time [us]")
 plt.ylabel("Voltage")
 plt.grid(True)
-plt.xlim(0.2, .3)
+# plt.xlim(0.2, .3)
 # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
 for i in range(channels):
     plt.plot(t_interp, data_interp[i])
 # 1VA+1V 2.54Vdd, 500Hz
 plt.legend(["Ch1", "Ch2", "Ch3"])
 
-crosscor_12 = np.correlate(data_interp[:,0], data_interp[:,1], mode='full')
+# ---------------------- auto corr
+crosscor_12 = abs(np.correlate(data_interp[0], data_interp[1], mode="full"))
+print(crosscor_12.shape)
 plt.subplot(2, 1, 2)
 plt.title("Cross correlation")
 plt.xlabel("Time")
 plt.ylabel("Cross correlation")
 plt.grid(True)
-plt.plot(crosscor_12)  # get the power spectrum
+plt.plot(range(-len(crosscor_12)/2, len(crosscor_12)/2), crosscor_12)  # get the power spectrum
 plt.legend(["krysskorr12"])
 plt.tight_layout()
 plt.show()
+
+# ----------------- find angle 
+
+
+def find_delay (a, b, Fs):
+    cross_corr = np.correlate(a, b)
+    cross_corr_max = np.max(np.abs(cross_corr)) 
+    return cross_corr_max/Fs
+
+print(find_delay(data_interp[0], data_interp[1], int(1/sample_period_interp)))
+
+n = {}
+
+# n[""]
 
 
 #plt.subplot(2, 1, 2)
