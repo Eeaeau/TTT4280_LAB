@@ -133,7 +133,7 @@ plt.title("Cross correlation")
 plt.xlabel("Time")
 plt.ylabel("Cross correlation")
 plt.grid(True)
-plt.plot(range(-len(crosscor_12)/2, len(crosscor_12)/2), crosscor_12)  # get the power spectrum
+plt.plot(range(-int(len(crosscor_12)/2), int(len(crosscor_12)/2)+1), crosscor_12)  # get the power spectrum
 plt.legend(["krysskorr12"])
 plt.tight_layout()
 plt.show()
