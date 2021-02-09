@@ -59,19 +59,21 @@ sample_period_interp = (1-sample_period*elements_removed)/num_interp_samples
 
 t_interp = np.linspace(start=0, stop=num_interp_samples*sample_period_interp, num=num_interp_samples)
 
-data_fixed = np.empty([channels, num_of_samples - elements_removed])
+data_fixed = np.empty([channels, num_of_samples_fixed])
 data_interp = np.empty([channels, num_interp_samples])
 # x = np.linspace(0, 1, num_interp_samples)
 
 for i in range(channels):
     data_fixed[i] = data[:, i][elements_removed:]
-    data_interp[i] = np.interp(t_interp, t[elements_removed:], data_fixed[i])
+    data_interp[i] = np.interp(t_interp, t[:num_of_samples_fixed], data_fixed[i])
 
-    # data_fixed[i] = i
+print(t[:num_of_samples_fixed].shape)
+
 print("Fixed", data_fixed.shape)
 print("interp", data_interp.shape)
 
-data_interp = signal.detrend(data_interp, axis=0)  # removes DC component for each channel
+for i in range(channels):
+    data_interp[i] = signal.detrend(data_interp[i], axis=0)  # removes DC component for each channel
 
 # Generate frequency axis and take FFT
 freq = np.fft.fftfreq(n=num_interp_samples, d=sample_period_interp)
@@ -92,9 +94,10 @@ plt.title("Time domain signal")
 plt.xlabel("Time [us]")
 plt.ylabel("Voltage")
 plt.grid(True)
-plt.xlim(0.2, .3)
+# plt.xlim(0.2, .3)
 # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
-plt.plot(t_interp, data_interp[0])
+for i in range(channels):
+    plt.plot(t_interp, data_interp[i])
 # 1VA+1V 2.54Vdd, 500Hz
 plt.legend(["Ch1", "Ch2", "Ch3"])
 
@@ -104,7 +107,8 @@ plt.title("Power spectrum of signal")
 plt.xlabel("Frequency [Hz]")
 plt.ylabel("Power [dB]")
 plt.xlim(-1000, 1000)
-plt.plot(freq, 20*np.log(np.abs(spectrum[0])))  # get the power spectrum
-plt.legend(["Ch1$", "Ch2$", "Ch3$"])
+for i in range(channels):
+    plt.plot(freq, 20*np.log(np.abs(spectrum[i])))  # get the power spectrum
+plt.legend(["Ch1", "Ch2", "Ch3"])
 plt.tight_layout()
 plt.show()
