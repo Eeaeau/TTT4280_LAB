@@ -127,6 +127,7 @@ plt.legend(["Ch1", "Ch2", "Ch3"])
 # ---------------------- auto corr
 crosscor_12 = abs(np.correlate(data_interp[0], data_interp[1], mode="full"))
 print(crosscor_12.shape)
+
 plt.subplot(2, 1, 2)
 plt.title("Cross correlation")
 plt.xlabel("Time")
@@ -151,6 +152,17 @@ n = {}
 
 # n[""]
 
+def find_delay2(a,b):
+    cross_corr = np.correlate(a, b)
+    cross_corr_max = np.max(np.abs(cross_corr)) 
+    sample_delay = (np.abs(cross_corr)).index(cross_corr_max)
+    #time_delay = sample_delay/f_s
+    return sample_delay#, time_delay
+
+testa = [1, 2, 3, 4, 5]
+testb = [0, 0, 1, 2, 3, 4, 5]
+
+print("Delaytest", find_delay2(testa,testb))
 
 #plt.subplot(2, 1, 2)
 #plt.title("Power spectrum of signal")
