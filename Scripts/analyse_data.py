@@ -40,7 +40,7 @@ def bandpass_filtering(data, low_cutfreq, high_cutfreq, fs, order):
 sample_period, data = raspi_import('export/measurement.bin', channels)
 
 
-data = signal.detrend(data, axis=0)  # removes DC component for each channel
+
 sample_period *= 1e-6  # change unit to micro seconds
 
 # Generate time axis
@@ -61,16 +61,17 @@ t_interp = np.linspace(start=0, stop=num_interp_samples*interp_sample_period, nu
 
 data_fixed = np.empty([channels, num_of_samples - elements_removed])
 data_interp = np.empty([channels, num_interp_samples])
-x = np.linspace(0, 1, num_interp_samples)
+# x = np.linspace(0, 1, num_interp_samples)
 
 for i in range(channels):
     data_fixed[i] = data[:, i][elements_removed:]
-    data_interp[i] = np.interp(x, t[elements_removed:], data_fixed[i])
+    data_interp[i] = np.interp(t_interp, t[elements_removed:], data_fixed[i])
 
     # data_fixed[i] = i
 print("Fixed", data_fixed.shape)
 print("interp", data_interp.shape)
 
+data_interp = signal.detrend(data_interp, axis=0)  # removes DC component for each channel
 
 # Generate frequency axis and take FFT
 freq = np.fft.fftfreq(n=num_interp_samples, d=interp_sample_period)
