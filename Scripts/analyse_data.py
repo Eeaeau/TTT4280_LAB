@@ -50,14 +50,14 @@ t = np.linspace(start=0, stop=num_of_samples*sample_period, num=num_of_samples)
 print(t.shape)
 
 # define new constants
-elements_removed = 100
+elements_removed = 3000
 num_interp_samples = 2**12
-
 num_of_samples_fixed = num_of_samples - elements_removed
 
-interp_sample_period = (1-sample_period*elements_removed)/num_interp_samples
 
-t_interp = np.linspace(start=0, stop=num_interp_samples*interp_sample_period, num=num_interp_samples)
+sample_period_interp = (1-sample_period*elements_removed)/num_interp_samples
+
+t_interp = np.linspace(start=0, stop=num_interp_samples*sample_period_interp, num=num_interp_samples)
 
 data_fixed = np.empty([channels, num_of_samples - elements_removed])
 data_interp = np.empty([channels, num_interp_samples])
@@ -74,10 +74,10 @@ print("interp", data_interp.shape)
 data_interp = signal.detrend(data_interp, axis=0)  # removes DC component for each channel
 
 # Generate frequency axis and take FFT
-freq = np.fft.fftfreq(n=num_interp_samples, d=interp_sample_period)
+freq = np.fft.fftfreq(n=num_interp_samples, d=sample_period_interp)
 spectrum = np.fft.fft(data_interp, axis=0)  # takes FFT of all channels
 
-print(freq.shape, spectrum.shape )
+# print(freq.shape, spectrum.shape )
 
 # Plot the results in two subplots
 # NOTICE: This lazily plots the entire matrixes. All the channels will be put into the same plots.
@@ -92,7 +92,7 @@ plt.title("Time domain signal")
 plt.xlabel("Time [us]")
 plt.ylabel("Voltage")
 plt.grid(True)
-plt.xlim(0, .02)
+plt.xlim(0.2, .3)
 # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
 plt.plot(t_interp, data_interp[0])
 # 1VA+1V 2.54Vdd, 500Hz
