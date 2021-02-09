@@ -133,7 +133,7 @@ plt.title("Cross correlation")
 plt.xlabel("n")
 plt.ylabel("Cross correlation")
 plt.grid(True)
-plt.plot(range(-int(len(crosscor_12)/2), int(len(crosscor_12)/2)+1), crosscor_12)  # get the power spectrum
+plt.stem(range(-int(len(crosscor_12)/2), int(len(crosscor_12)/2)+1), crosscor_12)  # get the power spectrum
 plt.legend(["krysskorr12"])
 plt.tight_layout()
 plt.show()
@@ -145,7 +145,7 @@ def find_lag (a, b):
     cross_corr = np.correlate(a, b, "full")
     print(cross_corr)
     cross_corr = np.flip(cross_corr, 0)
-    plt.stem(cross_corr)
+    # plt.stem(cross_corr)
     plt.show()
     cross_corr_max = np.argmax(np.abs(cross_corr), axis=0)
     return cross_corr_max-len(a)+1
@@ -169,6 +169,12 @@ testa = [1, 0, 0, 0, 0, 0, 0, 0]
 testb = [1, 0, 0, 0, 0, 0, 0, 0]
 
 print("Delaytest", find_lag(testa,testb))
+
+for i in range(channels):
+    for j in range(channels):
+        n[str(i)+str(j)]=find_lag(data_interp[i], data_interp[j])
+
+print(n["21"])
 
 #plt.subplot(2, 1, 2)
 #plt.title("Power spectrum of signal")
