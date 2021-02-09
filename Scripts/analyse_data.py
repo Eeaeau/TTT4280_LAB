@@ -67,14 +67,17 @@ print(t.shape)
  #   data[:,i] = bandpass_filtering(data[:,i], 400, 600, sample_period, 3)
 
 # define new constants
-elements_removed = 3000
-num_interp_samples = 2**12
+elements_removed = 4000
+num_interp_samples = 2**15
 num_of_samples_fixed = num_of_samples - elements_removed
 
 
 sample_period_interp = (1-sample_period*elements_removed)/num_interp_samples
 
 t_interp = np.linspace(start=0, stop=num_interp_samples*sample_period_interp, num=num_interp_samples)
+
+print(len(t))
+print(t_interp[-1])
 
 data_fixed = np.empty([channels, num_of_samples_fixed])
 data_interp = np.empty([channels, num_interp_samples])
@@ -94,7 +97,11 @@ for i in range(channels):
 
 # Generate frequency axis and take FFT
 freq = np.fft.fftfreq(n=num_interp_samples, d=sample_period_interp)
-spectrum = np.fft.fft(data_interp, axis=0)  # takes FFT of all channels
+
+spectrum = np.empty([channels, len(freq)])
+
+for i in range(channels):
+    spectrum[i] = np.fft.fft(data_interp[i], axis=0)  # takes FFT of all channels
 
 # print(freq.shape, spectrum.shape )
 
@@ -111,7 +118,7 @@ plt.title("Time domain signal")
 plt.xlabel("Time [us]")
 plt.ylabel("Voltage")
 plt.grid(True)
-# plt.xlim(0.2, .3)
+plt.xlim(0.2, .3)
 # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
 for i in range(channels):
     plt.plot(t_interp, data_interp[i])
@@ -124,7 +131,7 @@ plt.title("Power spectrum of signal")
 plt.xlabel("Frequency [Hz]")
 plt.ylabel("Power [dB]")
 plt.xlim(-1000, 1000)
-for i in range(channels):
+for i in range(channels-1):
     plt.plot(freq, 20*np.log(np.abs(spectrum[i])))  # get the power spectrum
 plt.legend(["Ch1", "Ch2", "Ch3"])
 plt.tight_layout()
