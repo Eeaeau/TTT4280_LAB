@@ -78,6 +78,7 @@ t_interp = np.linspace(start=0, stop=num_interp_samples*sample_period_interp, nu
 print(len(t))
 print(t_interp[-1])
 
+# Defining a new variable data_fixed, which will contain 
 data_fixed = np.empty([channels, num_of_samples_fixed])
 data_interp = np.empty([channels, num_interp_samples])
 # x = np.linspace(0, 1, num_interp_samples)
@@ -140,7 +141,11 @@ plt.show()
 
 # ----------------- find angle 
 
-
+# This function finds the lag (in number of samples) between two arrays a and b
+# This is done by taking the cross correlation of a and b 
+# (then flipping the array around 0, since np.correlate gives the reverse array of what we are used to)
+# Then finding the index of the largest argument (abs value) in the cross correlation array
+# This index, when adjusted for the fact that the correlation is centered around zero, is the lag in samples between a and b
 def find_lag (a, b):
     cross_corr = np.correlate(a, b, "full")
     print(cross_corr)
@@ -152,7 +157,7 @@ def find_lag (a, b):
 
 
 
-print(find_lag(data_interp[0], data_interp[1]))
+print("Lag", find_lag(data_interp[0], data_interp[1]))
 
 n = {}
 
@@ -170,16 +175,19 @@ testb = [1, 0, 0, 0, 0, 0, 0, 0]
 
 print("Delaytest", find_lag(testa,testb))
 
+# Finding the lag in samples for all combinations of microphones, and saving these to n
 for i in range(channels):
     for j in range(channels):
         n[str(i)+str(j)]=find_lag(data_interp[i], data_interp[j])
 
-print(n["21"])
+print("Lag for 21:", n["21"])
 
+# Function calculates the angle (innfallsvinkel) of the sound signal, 
+# based on the measured delay/lag between the different microphones 
 def find_angle(x21, x31, x32):
     return np.arctan2(np.sqrt(3)*(x21+x31), x21-x31-2*x32)
 
-print(find_angle(n["21"], n["31"], n["32"]))
+print("Angle:", find_angle(n["21"], n["31"], n["32"]))
 
 #plt.subplot(2, 1, 2)
 #plt.title("Power spectrum of signal")
