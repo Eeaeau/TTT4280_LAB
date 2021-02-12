@@ -50,7 +50,7 @@ def bandpass_filtering(data, low_cutfreq, high_cutfreq, T_sample, order):
 
 
 # Import data from bin file
-sample_period, data = raspi_import('export/sample2.bin', channels)
+sample_period, data = raspi_import('export/sample_500hz_0degree_2.bin', channels)
 
 
 sample_period *= 1e-6  # change unit to micro seconds
@@ -143,30 +143,6 @@ plt.tight_layout()
 plt.show()
 
 
-# Code for plotting the measured angles on a unit circle
-def Circle(x,y):
-    return (x*x+y*y)
-
-xx=np.linspace(-2,2,400)
-yy=np.linspace(-2,2,400)
-[X,Y]=np.meshgrid(xx,yy)
-
-Z=Circle(X,Y)
-
-x = []
-y = []
-#find_angle(n["21"], n["31"], n["32"])
-angles = [2 , 3.14, 4]
-for i in range (len(angles)):
-    x.append(np.cos(angles[i]))
-    y.append(np.sin(angles[i]))
-plt.figure()
-plt.grid(True)
-plt.contour(X,Y,Z,[1])
-plt.scatter(x,y)
-plt.show()
-
-
 # ----------------- find angle 
 
 # This function finds the lag (in number of samples) between two arrays a and b
@@ -226,3 +202,60 @@ print("Angle:", find_angle(n["21"], n["31"], n["32"]))
 #plt.legend(["Ch1", "Ch2", "Ch3"])
 #plt.tight_layout()
 #plt.show()
+
+
+
+# Code for plotting the measured angles on a unit circle
+def Circle(x,y):
+    return (x*x+y*y)
+
+# Converts angle from rad to deg
+def rad_to_deg(rad):
+    return (360*rad)/(2*(np.pi))
+
+xx=np.linspace(-2,2,400)
+yy=np.linspace(-2,2,400)
+[X,Y]=np.meshgrid(xx,yy)
+
+Z=Circle(X,Y)
+
+# Arrays for storing the coordinates of angle- and microphone points
+angx = []
+angy = []
+micx = []
+micy = []
+
+microphones = [np.pi/2, 7/6*(np.pi), 11/6*(np.pi)]
+for i in range (len(microphones)):
+    micx.append(np.cos(microphones[i]))
+    micy.append(np.sin(microphones[i]))
+
+angles = []
+# Itererer gjennom alle filene, og finne angle i hver av disse
+#angle = find_angle(n["21"], n["31"], n["32"])
+#angles.append(angle)
+
+for i in range (len(angles)):
+    angx.append(np.cos(angles[i]))
+    angy.append(np.sin(angles[i]))
+
+plt.figure()
+plt.grid(True)
+plt.contour(X,Y,Z,[1])
+plt.scatter(angx,angy)
+plt.scatter(micx,micy)
+
+i = 0
+for x,y in zip(micx, micy):
+    label = "Mic"+str(i)
+    i += 1
+    plt.annotate(label, (x,y), xytext=(0.0,10.0), textcoords="offset points", ha='center')
+
+i = 0
+for x,y in zip(angx, angy):
+    label = str(round(rad_to_deg(angles[i])))
+    i += 1
+    plt.annotate(label, (x,y), xytext=(0.0,10.0), textcoords="offset points", ha='center')
+
+
+plt.show()
