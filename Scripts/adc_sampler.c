@@ -119,9 +119,10 @@ int main(int argc, char *argv[])
     sscanf(argv[1], "%ld", &num_samples);
 
     
+    printf("test");
     scanf("%s %d", input_filename);
-
     printf(input_filename);
+
     
 
     // Array over sampled values, into which data will be saved
