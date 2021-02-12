@@ -247,4 +247,4 @@ for x,y in zip(angx, angy):
 plt.show()
 
 
-print("Angle:", rad_to_deg(find_angle(n["21"], n["31"], n["32"])))
+# print("Angle:", rad_to_deg(find_angle(n["21"], n["31"], n["32"])))
