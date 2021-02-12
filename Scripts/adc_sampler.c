@@ -38,7 +38,7 @@ channel ADC without need for any input to initiate sampling.
 #define ADCS 4      // Number of connected MCP3201.
 
 // #define OUTPUT_DATA argv[2] // path and filename to dump buffered ADC data
-#define OUTPUT_DATA "/home/pi/Documents/Git/TTT4280_LAB/Scripts/export/measurement.bin" // path and filename to dump buffered ADC data
+#define OUTPUT_DATA "/home/pi/Documents/Git/TTT4280_LAB/Scripts/export/" // path and filename to dump buffered ADC data
 
 /* RPi PIN ASSIGNMENTS */
 // #define MISO1 40    // ADC 1 MISO (BCM 4 aka GPIO 21).
@@ -69,7 +69,7 @@ channel ADC without need for any input to initiate sampling.
 int MISO[ADCS]={MISO1, MISO2, MISO3}; // Must be updated if you change number of ADCs/MISOs above
 /////// END USER SHOULD MAKE SURE THESE DEFINES CORRESPOND TO THEIR SETUP ///////
 
-char *input_filename[2];
+char input_filename[3];
 
 
 /**
@@ -118,7 +118,12 @@ int main(int argc, char *argv[])
     }
     sscanf(argv[1], "%ld", &num_samples);
 
-    cin >> concat(OUTPUT_DATA, input_filename);
+    
+    printf( "Enter a filename :");
+    scanf("%s", input_filename);
+    printf( "\nYou entered: %s \n", input_filename);
+
+    
 
     // Array over sampled values, into which data will be saved
     uint16_t *val = (uint16_t*)malloc(sizeof(uint16_t)*num_samples*ADCS);
@@ -253,7 +258,7 @@ int main(int argc, char *argv[])
     double output_nominal_period_us = floor(nominal_period_us); //the clock is accurate only to us resolution
 
     // Path to your data directory/file from previous define
-    const char *output_filename = OUTPUT_DATA;
+    const char *output_filename = concat(OUTPUT_DATA, input_filename);
 
     // Write sample period and data to file
     FILE *adc_data_file = fopen(output_filename, "wb+");
