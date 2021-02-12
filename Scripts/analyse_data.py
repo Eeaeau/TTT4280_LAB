@@ -59,6 +59,25 @@ def Circle(x,y):
 def rad_to_deg(rad):
     return (360*rad)/(2*(np.pi))
 
+
+# Function calculates the angle (innfallsvinkel) of the sound signal, 
+# based on the measured delay/lag between the different microphones 
+def find_angle(x21, x31, x32):
+    return np.arctan2(np.sqrt(3)*(x21+x31), x31-x21+2*x32)
+
+# This function finds the lag (in number of samples) between two arrays a and b
+# This is done by taking the cross correlation of a and b 
+# (then flipping the array around 0, since np.correlate gives the reverse array of what we are used to)
+# Then finding the index of the largest argument (abs value) in the cross correlation array
+# This index, when adjusted for the fact that the correlation is centered around zero, is the lag in samples between a and b
+def find_lag (a, b):
+    cross_corr = np.correlate(a, b, "full")
+    cross_corr = np.flip(cross_corr, 0)
+    plt.show()
+    cross_corr_max = np.argmax(np.abs(cross_corr), axis=0)
+    return cross_corr_max-len(a)+1
+
+
 # Import data from bin file
 sample_period, data = raspi_import('export/sample_brown_270degree_1.bin', channels)
 
@@ -153,18 +172,6 @@ plt.show()
 
 # ----------------- find angle 
 
-# This function finds the lag (in number of samples) between two arrays a and b
-# This is done by taking the cross correlation of a and b 
-# (then flipping the array around 0, since np.correlate gives the reverse array of what we are used to)
-# Then finding the index of the largest argument (abs value) in the cross correlation array
-# This index, when adjusted for the fact that the correlation is centered around zero, is the lag in samples between a and b
-def find_lag (a, b):
-    cross_corr = np.correlate(a, b, "full")
-    cross_corr = np.flip(cross_corr, 0)
-    plt.show()
-    cross_corr_max = np.argmax(np.abs(cross_corr), axis=0)
-    return cross_corr_max-len(a)+1
-
 n = {}
 
 testa = [1, 0.2, 0, 0, 0, 0, 0, 0]
@@ -177,10 +184,6 @@ for i in range(channels):
     for j in range(channels):
         n[str(i+1)+str(j+1)]=find_lag(data_interp[i], data_interp[j])
 
-# Function calculates the angle (innfallsvinkel) of the sound signal, 
-# based on the measured delay/lag between the different microphones 
-def find_angle(x21, x31, x32):
-    return np.arctan2(np.sqrt(3)*(x21+x31), x31-x21+2*x32)
 
 #plt.subplot(2, 1, 2)
 #plt.title("Power spectrum of signal")
