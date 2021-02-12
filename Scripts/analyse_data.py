@@ -53,8 +53,9 @@ def bandpass_filtering(data, low_cutfreq, high_cutfreq, T_sample, order):
 sample_period, data = raspi_import('export/measurement.bin', channels)
 
 
-
 sample_period *= 1e-6  # change unit to micro seconds
+
+print("Sampling frequency:", 1/sample_period)
 
 # Generate time axis
 num_of_samples = data.shape[0]  # returns shape of matrix
@@ -71,6 +72,8 @@ elements_removed = 4000
 num_interp_samples = 2**15
 num_of_samples_fixed = num_of_samples - elements_removed
 sample_period_interp = (1-sample_period*elements_removed)/num_interp_samples
+
+print("Sample frequency interp", 1/sample_period_interp)
 
 # define new time array 
 t_interp = np.linspace(start=0, stop=num_interp_samples*sample_period_interp, num=num_interp_samples)
@@ -138,6 +141,31 @@ plt.stem(range(-int(len(crosscor_12)/2), int(len(crosscor_12)/2)+1), crosscor_12
 plt.legend(["krysskorr12"])
 plt.tight_layout()
 plt.show()
+
+
+# Code for plotting the measured angles on a unit circle
+def Circle(x,y):
+    return (x*x+y*y)
+
+xx=np.linspace(-2,2,400)
+yy=np.linspace(-2,2,400)
+[X,Y]=np.meshgrid(xx,yy)
+
+Z=Circle(X,Y)
+
+x = []
+y = []
+#find_angle(n["21"], n["31"], n["32"])
+angles = [2 , 3.14, 4]
+for i in range (len(angles)):
+    x.append(np.cos(angles[i]))
+    y.append(np.sin(angles[i]))
+plt.figure()
+plt.grid(True)
+plt.contour(X,Y,Z,[1])
+plt.scatter(x,y)
+plt.show()
+
 
 # ----------------- find angle 
 
