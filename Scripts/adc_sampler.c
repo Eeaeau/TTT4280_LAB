@@ -119,9 +119,9 @@ int main(int argc, char *argv[])
     sscanf(argv[1], "%ld", &num_samples);
 
     
-    printf("test");
+    printf( "Enter a filename :");
     scanf("%s", input_filename);
-    printf(input_filename);
+    printf( "\nYou entered: %s", input_filename);
 
     
 
