@@ -50,7 +50,7 @@ def bandpass_filtering(data, low_cutfreq, high_cutfreq, T_sample, order):
 
 
 # Import data from bin file
-sample_period, data = raspi_import('export/measurement.bin', channels)
+sample_period, data = raspi_import('export/sample2.bin', channels)
 
 
 sample_period *= 1e-6  # change unit to micro seconds
@@ -176,7 +176,6 @@ plt.show()
 # This index, when adjusted for the fact that the correlation is centered around zero, is the lag in samples between a and b
 def find_lag (a, b):
     cross_corr = np.correlate(a, b, "full")
-    print(cross_corr)
     cross_corr = np.flip(cross_corr, 0)
     # plt.stem(cross_corr)
     plt.show()
