@@ -155,19 +155,8 @@ for i in range(channels):
 # 1VA+1V 2.54Vdd, 500Hz
 plt.legend(["Ch1", "Ch2", "Ch3"])
 
-# ---------------------- auto corr
-crosscor_12 = abs(np.correlate(data_interp[0], data_interp[1], mode="full"))
-print(crosscor_12)
 
-plt.subplot(2, 1, 2)
-plt.title("Cross correlation")
-plt.xlabel("n")
-plt.ylabel("Cross correlation")
-plt.grid(True)
-plt.stem(range(-int(len(crosscor_12)/2), int(len(crosscor_12)/2)+1), crosscor_12)  # get the power spectrum
-plt.legend(["krysskorr12"])
-plt.tight_layout()
-plt.show()
+
 
 
 # ----------------- find angle 
@@ -179,11 +168,23 @@ testb = [0, 0, 1, 0.2, 0, 0, 0, 0]
 
 print("Delaytest", find_lag(testa,testb))
 
+# ---------------------- auto corr
+
 # Finding the lag in samples for all combinations of microphones, and saving these to n
 for i in range(channels):
     for j in range(channels):
         n[str(i+1)+str(j+1)]=find_lag(data_interp[i], data_interp[j])
 
+
+plt.subplot(2, 1, 2)
+plt.title("Cross correlation")
+plt.xlabel("n")
+plt.ylabel("Cross correlation")
+plt.grid(True)
+plt.stem(range(-int(len(n["12"])/2), int(len(n["12"])/2)+1), n["12"])  # get the power spectrum
+plt.legend(["krysskorr12"])
+plt.tight_layout()
+plt.show()
 
 #plt.subplot(2, 1, 2)
 #plt.title("Power spectrum of signal")
@@ -195,9 +196,6 @@ for i in range(channels):
 #plt.legend(["Ch1", "Ch2", "Ch3"])
 #plt.tight_layout()
 #plt.show()
-
-
-
 
 
 xx=np.linspace(-2,2,400)
