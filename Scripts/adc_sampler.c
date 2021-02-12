@@ -118,7 +118,9 @@ int main(int argc, char *argv[])
     }
     sscanf(argv[1], "%ld", &num_samples);
 
-    cin >> concat(OUTPUT_DATA, input_filename);
+    scanf("%s %d", input_filename);
+
+    
 
     // Array over sampled values, into which data will be saved
     uint16_t *val = (uint16_t*)malloc(sizeof(uint16_t)*num_samples*ADCS);
@@ -253,7 +255,7 @@ int main(int argc, char *argv[])
     double output_nominal_period_us = floor(nominal_period_us); //the clock is accurate only to us resolution
 
     // Path to your data directory/file from previous define
-    const char *output_filename = OUTPUT_DATA;
+    const char *output_filename = concat(OUTPUT_DATA, input_filename);;
 
     // Write sample period and data to file
     FILE *adc_data_file = fopen(output_filename, "wb+");
