@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
     }
     sscanf(argv[1], "%ld", &num_samples);
 
-    
+    // Enter name of file to write to
     printf( "Enter a filename :");
     scanf("%s", input_filename);
     printf( "\nYou entered: %s \n", input_filename);
