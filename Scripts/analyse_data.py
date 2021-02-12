@@ -209,15 +209,16 @@ angy = []
 micx = []
 micy = []
 
-microphones = [np.pi/2, 7/6*(np.pi), 11/6*(np.pi)]
+microphones = [np.pi/2, 11/6*(np.pi), 7/6*(np.pi)]
 for i in range (len(microphones)):
     micx.append(np.cos(microphones[i]))
     micy.append(np.sin(microphones[i]))
 
 angles = []
 # Itererer gjennom alle filene, og finne angle i hver av disse
-#angle = find_angle(n["21"], n["31"], n["32"])
-#angles.append(angle)
+#obs 2 er 3 og 3 er 2 (basert på formelen, for vi har flyttet plass på mikrofon 2 og 3)
+angle = find_angle(n["21"], n["31"], n["32"])
+angles.append(angle)
 
 for i in range (len(angles)):
     angx.append(np.cos(angles[i]))
@@ -229,10 +230,9 @@ plt.contour(X,Y,Z,[1])
 plt.scatter(angx,angy)
 plt.scatter(micx,micy)
 
-i = 0
+i = 1
 for x,y in zip(micx, micy):
     label = "Mic"+str(i)
-    i += 1
     plt.annotate(label, (x,y), xytext=(0.0,10.0), textcoords="offset points", ha='center')
 
 i = 0
