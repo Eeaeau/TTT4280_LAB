@@ -50,11 +50,7 @@ def bandpass_filtering(data, low_cutfreq, high_cutfreq, T_sample, order):
 
 
 # Import data from bin file
-<<<<<<< HEAD
-sample_period, data = raspi_import('export/sample_400hz_90degree_1.bin', channels)
-=======
-sample_period, data = raspi_import('export/sample_500hz_0degree_2.bin', channels)
->>>>>>> e59aca80a8f9807719c40e41cdbf6d7fa764a0e5
+sample_period, data = raspi_import('export/sample_500hz_0degree_4.bin', channels)
 
 
 sample_period *= 1e-6  # change unit to micro seconds
@@ -171,7 +167,7 @@ print("Delaytest", find_lag(testa,testb))
 # Finding the lag in samples for all combinations of microphones, and saving these to n
 for i in range(channels):
     for j in range(channels):
-        n[str(i)+str(j)]=find_lag(data_interp[i], data_interp[j])
+        n[str(i+1)+str(j+1)]=find_lag(data_interp[i], data_interp[j])
 
 # Function calculates the angle (innfallsvinkel) of the sound signal, 
 # based on the measured delay/lag between the different microphones 
@@ -179,6 +175,9 @@ def find_angle(x21, x31, x32):
     return np.arctan2(np.sqrt(3)*(x21+x31), x21-x31-2*x32)
 
 print("Angle:", find_angle(n["21"], n["31"], n["32"]))
+
+
+
 
 #plt.subplot(2, 1, 2)
 #plt.title("Power spectrum of signal")
