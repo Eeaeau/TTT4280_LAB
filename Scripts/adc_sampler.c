@@ -29,6 +29,7 @@ channel ADC without need for any input to initiate sampling.
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 #include <pigpio.h>
 #include <math.h>
@@ -68,6 +69,9 @@ channel ADC without need for any input to initiate sampling.
 int MISO[ADCS]={MISO1, MISO2, MISO3}; // Must be updated if you change number of ADCs/MISOs above
 /////// END USER SHOULD MAKE SURE THESE DEFINES CORRESPOND TO THEIR SETUP ///////
 
+char *input_filename[2];
+
+
 /**
  * This function extracts the MISO bits for each ADC and
  * collates them into a reading per ADC.
@@ -78,6 +82,16 @@ int MISO[ADCS]={MISO1, MISO2, MISO3}; // Must be updated if you change number of
  * \param bits Bits per reading
  * \param buf Output buffer
 */
+
+char* concat(const char *s1, const char *s2)
+{
+    char *result = malloc(strlen(s1) + strlen(s2) + 1); // +1 for the null-terminator
+    // in real code you would check for errors in malloc here
+    strcpy(result, s1);
+    strcat(result, s2);
+    return result;
+}
+
 void getReading(int adcs, int *MISO, int OOL, int bytes, int bits, char *buf)
 {
    int p = OOL;
@@ -103,6 +117,8 @@ int main(int argc, char *argv[])
         exit(1);
     }
     sscanf(argv[1], "%ld", &num_samples);
+
+    cin >> concat(OUTPUT_DATA, input_filename);
 
     // Array over sampled values, into which data will be saved
     uint16_t *val = (uint16_t*)malloc(sizeof(uint16_t)*num_samples*ADCS);
@@ -196,6 +212,8 @@ int main(int argc, char *argv[])
         // Get position along DMA control block buffer corresponding to the current output command.
         int cb = rawWaveCB() - botCB;
         int now_reading = (float) cb / cbs_per_reading;
+
+
 
         while ((now_reading != reading) && (sample < num_samples)) {
             // Read samples from DMA input buffer up until the current output command
