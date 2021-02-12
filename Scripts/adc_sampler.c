@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
 
     
     printf("test");
-    scanf("%s %d", input_filename);
+    scanf("%s", input_filename);
     printf(input_filename);
 
     
