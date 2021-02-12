@@ -72,7 +72,9 @@ def find_angle(x21, x31, x32):
 # This index, when adjusted for the fact that the correlation is centered around zero, is the lag in samples between a and b
 def find_lag (a, b):
     cross_corr = np.correlate(a, b, "full")
-    cross_corr = np.flip(cross_corr, 0)
+    auto_corr = np.correlate(a, a, "full")
+    #cross_corr = np.flip(cross_corr, 0)
+    cross_corr = cross_corr-0.5*auto_corr
     plt.show()
     cross_corr_max = np.argmax(np.abs(cross_corr), axis=0)
     return cross_corr_max-len(a)+1
@@ -236,6 +238,7 @@ plt.scatter(micx,micy)
 i = 1
 for x,y in zip(micx, micy):
     label = "Mic"+str(i)
+    i += 1
     plt.annotate(label, (x,y), xytext=(0.0,10.0), textcoords="offset points", ha='center')
 
 i = 0
