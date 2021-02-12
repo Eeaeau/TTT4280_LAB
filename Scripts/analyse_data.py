@@ -47,11 +47,20 @@ def bandpass_filtering(data, low_cutfreq, high_cutfreq, T_sample, order):
 
     return filtered_data
 
+def autocorr(x):
+    result = np.correlate(x, x, mode='full')
+    return result[result.size/2:]
 
+# Code for plotting the measured angles on a unit circle
+def Circle(x,y):
+    return (x*x+y*y)
+
+# Converts angle from rad to deg
+def rad_to_deg(rad):
+    return (360*rad)/(2*(np.pi))
 
 # Import data from bin file
 sample_period, data = raspi_import('export/sample_brown_270degree_1.bin', channels)
-
 
 sample_period *= 1e-6  # change unit to micro seconds
 
@@ -61,7 +70,6 @@ print("Sampling frequency:", 1/sample_period)
 num_of_samples = data.shape[0]  # returns shape of matrix
 t = np.linspace(start=0, stop=num_of_samples*sample_period, num=num_of_samples)
 
-# print(t.shape)
 
 # Unwanted noise is filtered from the signals
 #for i in range(channels):
@@ -172,12 +180,7 @@ for i in range(channels):
 # Function calculates the angle (innfallsvinkel) of the sound signal, 
 # based on the measured delay/lag between the different microphones 
 def find_angle(x21, x31, x32):
-    return np.arctan2(np.sqrt(3)*(x21+x31), x21-x31-2*x32)
-
-print("Angle:", find_angle(n["21"], n["31"], n["32"]))
-
-
-
+    return np.arctan2(np.sqrt(3)*(x21+x31), x31-x21+2*x32)
 
 #plt.subplot(2, 1, 2)
 #plt.title("Power spectrum of signal")
@@ -192,13 +195,7 @@ print("Angle:", find_angle(n["21"], n["31"], n["32"]))
 
 
 
-# Code for plotting the measured angles on a unit circle
-def Circle(x,y):
-    return (x*x+y*y)
 
-# Converts angle from rad to deg
-def rad_to_deg(rad):
-    return (360*rad)/(2*(np.pi))
 
 xx=np.linspace(-2,2,400)
 yy=np.linspace(-2,2,400)
@@ -246,3 +243,6 @@ for x,y in zip(angx, angy):
 
 
 plt.show()
+
+
+print("Angle:", rad_to_deg(find_angle(n["21"], n["31"], n["32"])))
