@@ -50,7 +50,7 @@ def bandpass_filtering(data, low_cutfreq, high_cutfreq, T_sample, order):
 
 
 # Import data from bin file
-sample_period, data = raspi_import('export/sample_500hz_0degree_4.bin', channels)
+sample_period, data = raspi_import('sample_brown_270degree_1.bin', channels)
 
 
 sample_period *= 1e-6  # change unit to micro seconds
