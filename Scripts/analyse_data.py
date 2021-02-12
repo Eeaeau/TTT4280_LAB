@@ -138,10 +138,8 @@ for i in range(channels):
 # Plot the results in two subplots
 # NOTICE: This lazily plots the entire matrixes. All the channels will be put into the same plots.
 # If you want a single channel, use data[:,n] to get channel n
-# fig = plt.figure(figsize=(16/2.5, 9/2.5))
+fig = plt.figure(figsize=(16/2.5, 9/2.5))
 
-
-# print(data[:, 0])
 
 plt.subplot(2, 1, 1)
 plt.title("Time domain signal")
@@ -155,33 +153,16 @@ for i in range(channels):
 # 1VA+1V 2.54Vdd, 500Hz
 plt.legend(["Ch1", "Ch2", "Ch3"])
 
-
-
-
-
-# ----------------- find angle 
-
-n = {}
-
-testa = [1, 0.2, 0, 0, 0, 0, 0, 0]
-testb = [0, 0, 1, 0.2, 0, 0, 0, 0]
-
-print("Delaytest", find_lag(testa,testb))
-
 # ---------------------- auto corr
 
-# Finding the lag in samples for all combinations of microphones, and saving these to n
-for i in range(channels):
-    for j in range(channels):
-        n[str(i+1)+str(j+1)]=find_lag(data_interp[i], data_interp[j])
-
+corr_12 = np.correlate(data_interp[0], data_interp[1], "full")
 
 plt.subplot(2, 1, 2)
 plt.title("Cross correlation")
 plt.xlabel("n")
 plt.ylabel("Cross correlation")
 plt.grid(True)
-plt.stem(range(-int(len(n["12"])/2), int(len(n["12"])/2)+1), n["12"])  # get the power spectrum
+plt.stem(range(-int(len(corr_12)/2), int(len(corr_12)/2)+1),corr_12)  # get the power spectrum
 plt.legend(["krysskorr12"])
 plt.tight_layout()
 plt.show()
@@ -196,6 +177,27 @@ plt.show()
 #plt.legend(["Ch1", "Ch2", "Ch3"])
 #plt.tight_layout()
 #plt.show()
+
+# ----------------- find angle -------------- 
+
+
+
+
+
+testa = [1, 0.2, 0, 0, 0, 0, 0, 0]
+testb = [0, 0, 1, 0.2, 0, 0, 0, 0]
+
+print("Delaytest", find_lag(testa,testb))
+
+
+# dictonary to hold relative crosscorelations
+n = {}
+
+# Finding the lag in samples for all combinations of microphones, and saving these to n
+for i in range(channels):
+    for j in range(channels):
+        n[str(i+1)+str(j+1)]=find_lag(data_interp[i], data_interp[j])
+
 
 
 xx=np.linspace(-2,2,400)
@@ -225,7 +227,7 @@ for i in range (len(angles)):
     angx.append(np.cos(angles[i]))
     angy.append(np.sin(angles[i]))
 
-plt.figure()
+plt.figure(figsize=(10, 10))
 plt.grid(True)
 plt.contour(X,Y,Z,[1])
 plt.scatter(angx,angy)
@@ -241,7 +243,6 @@ for x,y in zip(angx, angy):
     label = str(round(rad_to_deg(angles[i])))
     i += 1
     plt.annotate(label, (x,y), xytext=(0.0,10.0), textcoords="offset points", ha='center')
-
 
 plt.show()
 
