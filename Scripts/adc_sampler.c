@@ -69,7 +69,7 @@ channel ADC without need for any input to initiate sampling.
 int MISO[ADCS]={MISO1, MISO2, MISO3}; // Must be updated if you change number of ADCs/MISOs above
 /////// END USER SHOULD MAKE SURE THESE DEFINES CORRESPOND TO THEIR SETUP ///////
 
-char *input_filename[2];
+char input_filename[2];
 
 
 /**
