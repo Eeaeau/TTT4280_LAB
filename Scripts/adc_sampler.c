@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
     
     printf( "Enter a filename :");
     scanf("%s", input_filename);
-    printf( "\nYou entered: %s", input_filename);
+    printf( "\nYou entered: %s \n", input_filename);
 
     
 
