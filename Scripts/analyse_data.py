@@ -50,7 +50,7 @@ def bandpass_filtering(data, low_cutfreq, high_cutfreq, T_sample, order):
 
 
 # Import data from bin file
-sample_period, data = raspi_import('export/sample2.bin', channels)
+sample_period, data = raspi_import('export/sample_400hz_90degree_1.bin', channels)
 
 
 sample_period *= 1e-6  # change unit to micro seconds
@@ -177,28 +177,14 @@ plt.show()
 def find_lag (a, b):
     cross_corr = np.correlate(a, b, "full")
     cross_corr = np.flip(cross_corr, 0)
-    # plt.stem(cross_corr)
     plt.show()
     cross_corr_max = np.argmax(np.abs(cross_corr), axis=0)
     return cross_corr_max-len(a)+1
 
-
-
-print("Lag", find_lag(data_interp[0], data_interp[1]))
-
 n = {}
 
-# n[""]
-
-# def find_lag2(a,b):
-#     cross_corr = np.correlate(a, b)
-#     cross_corr_max = np.max(np.abs(cross_corr)) 
-#     sample_delay = (np.abs(cross_corr)).index(cross_corr_max)
-#     #time_delay = sample_delay/f_s
-#     return sample_delay#, time_delay
-
-testa = [1, 0, 0, 0, 0, 0, 0, 0]
-testb = [1, 0, 0, 0, 0, 0, 0, 0]
+testa = [1, 0.2, 0, 0, 0, 0, 0, 0]
+testb = [0, 0, 1, 0.2, 0, 0, 0, 0]
 
 print("Delaytest", find_lag(testa,testb))
 
@@ -206,8 +192,6 @@ print("Delaytest", find_lag(testa,testb))
 for i in range(channels):
     for j in range(channels):
         n[str(i)+str(j)]=find_lag(data_interp[i], data_interp[j])
-
-print("Lag for 21:", n["21"])
 
 # Function calculates the angle (innfallsvinkel) of the sound signal, 
 # based on the measured delay/lag between the different microphones 
