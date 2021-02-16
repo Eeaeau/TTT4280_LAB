@@ -82,7 +82,7 @@ def find_lag (a, b):
 
 
 # Import data from bin file
-sample_period, data = raspi_import('export/sample_brown_270degree_1.bin', channels)
+sample_period, data = raspi_import('export/sample_brown_0degree_3.bin', channels)
 
 sample_period *= 1e-6  # change unit to micro seconds
 
@@ -187,10 +187,10 @@ plt.show()
 
 
 
-testa = [1, 0.2, 0, 0, 0, 0, 0, 0]
-testb = [0, 0, 1, 0.2, 0, 0, 0, 0]
+# testa = [1, 0.2, 0, 0, 0, 0, 0, 0]
+# testb = [0, 0, 1, 0.2, 0, 0, 0, 0]
 
-print("Delaytest", find_lag(testa,testb))
+# print("Delaytest", find_lag(testa,testb))
 
 
 # dictonary to hold relative crosscorelations
