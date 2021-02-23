@@ -128,6 +128,13 @@ print("interp", data_interp.shape)
 for i in range(channels):
     data_interp[i] = signal.detrend(data_interp[i], axis=0)  # removes DC component for each channel
 
+#lab3 - radar
+#combined_IQ = data_interp[0] + 1j * data_interp[1]
+#IQ_freq = np.fft.fftfreq(n=num_interp_samples, d=sample_period_interp)
+
+#doppler_spectrum = np.empty([1, len(IQ_freq)])
+#doppler_spectrum[0] = np.fft.fft(combined_IQ, axis=0)
+
 # Generate frequency axis and take FFT
 freq = np.fft.fftfreq(n=num_interp_samples, d=sample_period_interp)
 
