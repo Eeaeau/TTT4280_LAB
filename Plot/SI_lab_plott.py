@@ -5,7 +5,7 @@ from matplotlib.pyplot import text
 import numpy as np
 from matplotlib import rc
 
-fig = plt.figure(figsize=(16/2.5, 9/2.5))
+fig = plt.figure(figsize=(16/2, 9/2))
 
 # from matplotlib import rc
 # rc('font', **{'family': 'sans-serif', 'sans-serif': ['Helvetica']})
@@ -17,7 +17,7 @@ data1 = []
 header2 = []
 data2 = []
 
-filename1 = "Lab/Plot/Lab1_Lavpassfilter_frekvensrespons.csv"
+filename1 = "Plot\Lab3_bandpass_fr.csv"
 # filename2 = "graf_v1_v_3.csv"
 # filename2 = "v_1 og v_2 1kHz.csv"
 
@@ -58,16 +58,35 @@ ch21 = [(p[2]) for p in data1]
 # plt.rc('font', family='serif')
 
 # plt.plot(f, ch11, f, ch21, time2, ch22, linewidth="0.5")
-plt.semilogx(f, ch11)
 plt.semilogx(f, ch21)
+plt.semilogx(f, ch11)
 plt.grid(True)
 
 plt.xlabel("Frequency (f)")
 plt.ylabel("Amplitude (dB)")
 # plt.legend(['Channel 1 (V)', 'Channel 2 (V)', 'Channel 3 (V)'])
-plt.legend(['$v_in(t)$', '$v_out(t)$'], loc="lower left")
+plt.legend(['$v_{in}(t)$', '$v_{out}(t)$'], loc="lower left")
 # plt.legend(['$v_1 (t)$', '$v_2 (t)$'])
-plt.axhline(y=-3, color='black')
+plt.axhline(y=max(ch11)-3, color='red')
+plt.axvline(x=3.4315, color='red')
+plt.axvline(x=20912.79105182546, color='red')
+
+bbox = dict(boxstyle ="round", fc ="0.8") 
+arrowprops = dict( 
+    arrowstyle = "->", 
+    connectionstyle = "angle, angleA = 0, angleB = 90, rad = 10") 
+offset = 30
+
+plt.annotate("$-3dB$", xy=(ch11.index(max(ch11)), max(ch11)-3), xytext = (2*offset, -offset/2), textcoords ='offset points', 
+            bbox = bbox, arrowprops = arrowprops)
+
+plt.annotate("$3.43$Hz", xy=(3.4315,0), xytext = (2*offset, -offset/2), textcoords ='offset points', 
+            bbox = bbox, arrowprops = arrowprops)
+plt.annotate("$20.91$kHz", xy=(20912.79,0), xytext = (-3*offset, -offset/2), textcoords ='offset points', 
+            bbox = bbox, arrowprops = arrowprops)
+plt.xscale('log')
+plt.xlim(0,10**5)
+plt.ylim(-3)
 # plt.rcParams["legend.shadow"]
 
 plt.show()
