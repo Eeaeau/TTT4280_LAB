@@ -38,8 +38,9 @@ def bandpass_transferfunc(low_freq, high_freq, T_sample, order):
 
     return b, a
 
+
 def bandpass_filtering(data, low_cutfreq, high_cutfreq, T_sample, order):
-    
+
     b, a = bandpass_transferfunc(low_cutfreq, high_cutfreq, T_sample, order)
 
     filtered_data = signal.filtfilt(b, a, data)
@@ -47,32 +48,39 @@ def bandpass_filtering(data, low_cutfreq, high_cutfreq, T_sample, order):
 
     return filtered_data
 
+
 def autocorr(x):
     result = np.correlate(x, x, mode='full')
     return result[result.size/2:]
 
 # Code for plotting the measured angles on a unit circle
-def Circle(x,y):
+
+
+def Circle(x, y):
     return (x*x+y*y)
 
 # Converts angle from rad to deg
+
+
 def rad_to_deg(rad):
     return (360*rad)/(2*(np.pi))
 
 
-# Function calculates the angle (innfallsvinkel) of the sound signal, 
-# based on the measured delay/lag between the different microphones 
+# Function calculates the angle (innfallsvinkel) of the sound signal,
+# based on the measured delay/lag between the different microphones
 def find_angle(x21, x31, x32):
     return np.arctan2(np.sqrt(3)*(x21+x31), x31-x21+2*x32)
 
 # This function finds the lag (in number of samples) between two arrays a and b
-# This is done by taking the cross correlation of a and b 
+# This is done by taking the cross correlation of a and b
 # (then flipping the array around 0, since np.correlate gives the reverse array of what we are used to)
 # Then finding the index of the largest argument (abs value) in the cross correlation array
 # This index, when adjusted for the fact that the correlation is centered around zero, is the lag in samples between a and b
-def find_lag (a, b):
+
+
+def find_lag(a, b):
     cross_corr = np.correlate(a, b, "full")
-    autocorr = np.correlate(a, a, "full" )
+    autocorr = np.correlate(a, a, "full")
     cross_corr = cross_corr-0.5*autocorr
     # cross_corr = cross_corr-autocorr(a)
     # plt.stem(cross_corr)
@@ -82,7 +90,7 @@ def find_lag (a, b):
 
 
 # Import data from bin file
-sample_period, data = raspi_import('export/sample_brown_90degree_1.bin', channels)
+sample_period, data = raspi_import('export/radar_test.bin', channels)
 
 sample_period *= 1e-6  # change unit to micro seconds
 
@@ -94,8 +102,8 @@ t = np.linspace(start=0, stop=num_of_samples*sample_period, num=num_of_samples)
 
 
 # Unwanted noise is filtered from the signals
-#for i in range(channels):
- #   data[:,i] = bandpass_filtering(data[:,i], 400, 600, sample_period, 3)
+# for i in range(channels):
+#   data[:,i] = bandpass_filtering(data[:,i], 400, 600, sample_period, 3)
 
 # define new constants
 elements_removed = 4000
@@ -105,20 +113,22 @@ sample_period_interp = (1-sample_period*elements_removed)/num_interp_samples
 
 print("Sample frequency interp", 1/sample_period_interp)
 
-# define new time array 
-t_interp = np.linspace(start=0, stop=num_interp_samples*sample_period_interp, num=num_interp_samples)
+# define new time array
+t_interp = np.linspace(start=0, stop=num_interp_samples *
+                       sample_period_interp, num=num_interp_samples)
 
 print(len(t))
 print(t_interp[-1])
 
-# Defining a new variable data_fixed, which will contain 
+# Defining a new variable data_fixed, which will contain
 data_fixed = np.empty([channels, num_of_samples_fixed])
 data_interp = np.empty([channels, num_interp_samples])
 # x = np.linspace(0, 1, num_interp_samples)
 
 for i in range(channels):
     data_fixed[i] = data[:, i][elements_removed:]
-    data_interp[i] = np.interp(t_interp, t[:num_of_samples_fixed], data_fixed[i])
+    data_interp[i] = np.interp(
+        t_interp, t[:num_of_samples_fixed], data_fixed[i])
 
 print(t[:num_of_samples_fixed].shape)
 
@@ -126,7 +136,8 @@ print("Fixed", data_fixed.shape)
 print("interp", data_interp.shape)
 
 for i in range(channels):
-    data_interp[i] = signal.detrend(data_interp[i], axis=0)  # removes DC component for each channel
+    # removes DC component for each channel
+    data_interp[i] = signal.detrend(data_interp[i], axis=0)
 
 #lab3 - radar
 #combined_IQ = data_interp[0] + 1j * data_interp[1]
@@ -141,7 +152,8 @@ freq = np.fft.fftfreq(n=num_interp_samples, d=sample_period_interp)
 spectrum = np.empty([channels, len(freq)])
 
 for i in range(channels):
-    spectrum[i] = np.fft.fft(data_interp[i], axis=0)  # takes FFT of all channels
+    # takes FFT of all channels
+    spectrum[i] = np.fft.fft(data_interp[i], axis=0)
 
 # print(freq.shape, spectrum.shape )
 
@@ -172,7 +184,8 @@ plt.title("Cross correlation")
 plt.xlabel("n")
 plt.ylabel("Cross correlation")
 plt.grid(True)
-plt.stem(range(-int(len(corr_12)/2), int(len(corr_12)/2)+1),corr_12)  # get the power spectrum
+plt.stem(range(-int(len(corr_12)/2), int(len(corr_12)/2)+1),
+         corr_12)  # get the power spectrum
 plt.legend(["krysskorr12"])
 plt.tight_layout()
 plt.show()
@@ -182,16 +195,13 @@ plt.show()
 #plt.xlabel("Frequency [Hz]")
 #plt.ylabel("Power [dB]")
 #plt.xlim(-1000, 1000)
-#for i in range(channels-1):
- #   plt.plot(freq, 20*np.log(np.abs(spectrum[i])))  # get the power spectrum
+# for i in range(channels-1):
+#   plt.plot(freq, 20*np.log(np.abs(spectrum[i])))  # get the power spectrum
 #plt.legend(["Ch1", "Ch2", "Ch3"])
-#plt.tight_layout()
-#plt.show()
+# plt.tight_layout()
+# plt.show()
 
-# ----------------- find angle -------------- 
-
-
-
+# ----------------- find angle --------------
 
 
 # testa = [1, 0.2, 0, 0, 0, 0, 0, 0]
@@ -206,15 +216,14 @@ n = {}
 # Finding the lag in samples for all combinations of microphones, and saving these to n
 for i in range(channels):
     for j in range(channels):
-        n[str(i+1)+str(j+1)]=find_lag(data_interp[i], data_interp[j])
+        n[str(i+1)+str(j+1)] = find_lag(data_interp[i], data_interp[j])
 
 
+xx = np.linspace(-2, 2, 400)
+yy = np.linspace(-2, 2, 400)
+[X, Y] = np.meshgrid(xx, yy)
 
-xx=np.linspace(-2,2,400)
-yy=np.linspace(-2,2,400)
-[X,Y]=np.meshgrid(xx,yy)
-
-Z=Circle(X,Y)
+Z = Circle(X, Y)
 
 # Arrays for storing the coordinates of angle- and microphone points
 angx = []
@@ -223,36 +232,38 @@ micx = []
 micy = []
 
 microphones = [np.pi/2, 11/6*(np.pi), 7/6*(np.pi)]
-for i in range (len(microphones)):
+for i in range(len(microphones)):
     micx.append(np.cos(microphones[i]))
     micy.append(np.sin(microphones[i]))
 
 angles = []
 # Itererer gjennom alle filene, og finne angle i hver av disse
-#obs 2 er 3 og 3 er 2 (basert på formelen, for vi har flyttet plass på mikrofon 2 og 3)
+# obs 2 er 3 og 3 er 2 (basert på formelen, for vi har flyttet plass på mikrofon 2 og 3)
 angle = find_angle(n["21"], n["31"], n["32"])
 angles.append(angle)
 
-for i in range (len(angles)):
+for i in range(len(angles)):
     angx.append(np.cos(angles[i]))
     angy.append(np.sin(angles[i]))
 
 plt.figure(figsize=(10, 10))
 plt.grid(True)
-plt.contour(X,Y,Z,[1])
-plt.scatter(angx,angy)
-plt.scatter(micx,micy)
+plt.contour(X, Y, Z, [1])
+plt.scatter(angx, angy)
+plt.scatter(micx, micy)
 
 i = 1
-for x,y in zip(micx, micy):
+for x, y in zip(micx, micy):
     label = "Mic"+str(i)
     i += 1
-    plt.annotate(label, (x,y), xytext=(0.0,10.0), textcoords="offset points", ha='center')
+    plt.annotate(label, (x, y), xytext=(0.0, 10.0),
+                 textcoords="offset points", ha='center')
 
 i = 0
-for x,y in zip(angx, angy):
+for x, y in zip(angx, angy):
     label = str(round(rad_to_deg(angles[i])))
     i += 1
-    plt.annotate(label, (x,y), xytext=(0.0,10.0), textcoords="offset points", ha='center')
+    plt.annotate(label, (x, y), xytext=(0.0, 10.0),
+                 textcoords="offset points", ha='center')
 
 plt.show()
