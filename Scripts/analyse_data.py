@@ -90,7 +90,7 @@ def find_lag(a, b):
 
 
 # Import data from bin file
-sample_period, data = raspi_import('export/radar_test2.bin', channels)
+sample_period, data = raspi_import('export/radar_test3.bin', channels)
 
 sample_period *= 1e-6  # change unit to micro seconds
 
@@ -139,12 +139,20 @@ for i in range(channels):
     # removes DC component for each channel
     data_interp[i] = signal.detrend(data_interp[i], axis=0)
 
-#lab3 - radar
-#combined_IQ = data_interp[0] + 1j * data_interp[1]
-#IQ_freq = np.fft.fftfreq(n=num_interp_samples, d=sample_period_interp)
 
-#doppler_spectrum = np.empty([1, len(IQ_freq)])
-#doppler_spectrum[0] = np.fft.fft(combined_IQ, axis=0)
+#lab3 - radar
+
+#Diverse vindusfunksjoner som kan multipliseres med signalet vårt.
+#for i in range(3, channels):
+ #   data_interp[i] = data_interp[i] * np.hamming(num_interp_samples)
+    #data_interp[i] = data_interp[i] * np.hanning(num_interp_samples)
+    #data_interp[i] = data_interp[i] * np.kaiser(num_interp_samples, 1.5) #siste argument gir formen på vinduet
+
+combined_IQ = data_interp[3] + 1j * data_interp[4] # ADC4 = 3, ADC5= 4
+IQ_freq = np.fft.fftfreq(n=num_interp_samples, d=sample_period_interp)
+
+doppler_spectrum = np.empty([1, len(IQ_freq)])
+doppler_spectrum[0] = np.fft.fft(combined_IQ, axis=0)
 
 # Generate frequency axis and take FFT
 freq = np.fft.fftfreq(n=num_interp_samples, d=sample_period_interp)
@@ -163,32 +171,32 @@ for i in range(channels):
 fig = plt.figure(figsize=(16/2.5, 9/2.5))
 
 
-plt.subplot(2, 1, 1)
-plt.title("Time domain signal")
-plt.xlabel("Time [us]")
-plt.ylabel("Voltage")
-plt.grid(True)
+#plt.subplot(2, 1, 1)
+#plt.title("Time domain signal")
+#plt.xlabel("Time [us]")
+#plt.ylabel("Voltage")
+#plt.grid(True)
 # plt.xlim(0.2, .3)
 # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
-for i in range(3, channels):
-    plt.plot(t_interp, data_interp[i])
+#for i in range(3, channels):
+ #   plt.plot(t_interp, data_interp[i])
 # 1VA+1V 2.54Vdd, 500Hz
-plt.legend(["Ch1", "Ch2", "Ch3", "Ch4", "Ch5"])
+#plt.legend(["Ch1", "Ch2", "Ch3", "Ch4", "Ch5"])
 
 # ---------------------- auto corr
 
-corr_12 = np.correlate(data_interp[0], data_interp[1], "full")
+# corr_12 = np.correlate(data_interp[0], data_interp[1], "full")
 
-plt.subplot(2, 1, 2)
-plt.title("Cross correlation")
-plt.xlabel("n")
-plt.ylabel("Cross correlation")
-plt.grid(True)
-plt.stem(range(-int(len(corr_12)/2), int(len(corr_12)/2)+1),
-         corr_12)  # get the power spectrum
-plt.legend(["krysskorr12"])
-plt.tight_layout()
-plt.show()
+# plt.subplot(2, 1, 2)
+# plt.title("Cross correlation")
+# plt.xlabel("n")
+# plt.ylabel("Cross correlation")
+# plt.grid(True)
+# plt.stem(range(-int(len(corr_12)/2), int(len(corr_12)/2)+1),
+#          corr_12)  # get the power spectrum
+# plt.legend(["krysskorr12"])
+# plt.tight_layout()
+# #plt.show()
 
 #plt.subplot(2, 1, 2)
 #plt.title("Power spectrum of signal")
@@ -201,69 +209,95 @@ plt.show()
 # plt.tight_layout()
 # plt.show()
 
-# ----------------- find angle --------------
 
+# ----------------------- doppler spektrum - LAB3
 
-# testa = [1, 0.2, 0, 0, 0, 0, 0, 0]
-# testb = [0, 0, 1, 0.2, 0, 0, 0, 0]
-
-# print("Delaytest", find_lag(testa,testb))
-
-
-# dictonary to hold relative crosscorelations
-n = {}
-
-# Finding the lag in samples for all combinations of microphones, and saving these to n
-for i in range(channels):
-    for j in range(channels):
-        n[str(i+1)+str(j+1)] = find_lag(data_interp[i], data_interp[j])
-
-
-xx = np.linspace(-2, 2, 400)
-yy = np.linspace(-2, 2, 400)
-[X, Y] = np.meshgrid(xx, yy)
-
-Z = Circle(X, Y)
-
-# Arrays for storing the coordinates of angle- and microphone points
-angx = []
-angy = []
-micx = []
-micy = []
-
-microphones = [np.pi/2, 11/6*(np.pi), 7/6*(np.pi)]
-for i in range(len(microphones)):
-    micx.append(np.cos(microphones[i]))
-    micy.append(np.sin(microphones[i]))
-
-angles = []
-# Itererer gjennom alle filene, og finne angle i hver av disse
-# obs 2 er 3 og 3 er 2 (basert på formelen, for vi har flyttet plass på mikrofon 2 og 3)
-angle = find_angle(n["21"], n["31"], n["32"])
-angles.append(angle)
-
-for i in range(len(angles)):
-    angx.append(np.cos(angles[i]))
-    angy.append(np.sin(angles[i]))
-
-plt.figure(figsize=(10, 10))
+plt.subplot(2, 1, 1)
+plt.title("Time domain signal")
+plt.xlabel("Time [us]")
+plt.ylabel("Voltage")
 plt.grid(True)
-plt.contour(X, Y, Z, [1])
-plt.scatter(angx, angy)
-plt.scatter(micx, micy)
+# plt.xlim(0.2, .3)
+# plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
+for i in range(3, channels):
+    plt.plot(t_interp, data_interp[i])
+# 1VA+1V 2.54Vdd, 500Hz
+plt.legend(["Ch1", "Ch2", "Ch3"])
 
-i = 1
-for x, y in zip(micx, micy):
-    label = "Mic"+str(i)
-    i += 1
-    plt.annotate(label, (x, y), xytext=(0.0, 10.0),
-                 textcoords="offset points", ha='center')
-
-i = 0
-for x, y in zip(angx, angy):
-    label = str(round(rad_to_deg(angles[i])))
-    i += 1
-    plt.annotate(label, (x, y), xytext=(0.0, 10.0),
-                 textcoords="offset points", ha='center')
-
+plt.subplot(2, 1, 2)
+plt.title("Doppler spectrum of signal")
+plt.xlabel("Frequency [Hz]")
+plt.ylabel("Power [dB]")
+plt.xlim(-1000, 1000)
+plt.plot(IQ_freq, 20*np.log(np.abs(doppler_spectrum[0])))  # get the power spectrum
+plt.legend(["Doppler spectrum"])
+plt.tight_layout()
 plt.show()
+
+
+# ------------------------------------- find angle ----------------------------------------
+
+
+# # testa = [1, 0.2, 0, 0, 0, 0, 0, 0]
+# # testb = [0, 0, 1, 0.2, 0, 0, 0, 0]
+
+# # print("Delaytest", find_lag(testa,testb))
+
+
+# # dictonary to hold relative crosscorelations
+# n = {}
+
+# # Finding the lag in samples for all combinations of microphones, and saving these to n
+# for i in range(channels):
+#     for j in range(channels):
+#         n[str(i+1)+str(j+1)] = find_lag(data_interp[i], data_interp[j])
+
+
+# xx = np.linspace(-2, 2, 400)
+# yy = np.linspace(-2, 2, 400)
+# [X, Y] = np.meshgrid(xx, yy)
+
+# Z = Circle(X, Y)
+
+# # Arrays for storing the coordinates of angle- and microphone points
+# angx = []
+# angy = []
+# micx = []
+# micy = []
+
+# microphones = [np.pi/2, 11/6*(np.pi), 7/6*(np.pi)]
+# for i in range(len(microphones)):
+#     micx.append(np.cos(microphones[i]))
+#     micy.append(np.sin(microphones[i]))
+
+# angles = []
+# # Itererer gjennom alle filene, og finne angle i hver av disse
+# # obs 2 er 3 og 3 er 2 (basert på formelen, for vi har flyttet plass på mikrofon 2 og 3)
+# angle = find_angle(n["21"], n["31"], n["32"])
+# angles.append(angle)
+
+# for i in range(len(angles)):
+#     angx.append(np.cos(angles[i]))
+#     angy.append(np.sin(angles[i]))
+
+# plt.figure(figsize=(10, 10))
+# plt.grid(True)
+# plt.contour(X, Y, Z, [1])
+# plt.scatter(angx, angy)
+# plt.scatter(micx, micy)
+
+# i = 1
+# for x, y in zip(micx, micy):
+#     label = "Mic"+str(i)
+#     i += 1
+#     plt.annotate(label, (x, y), xytext=(0.0, 10.0),
+#                  textcoords="offset points", ha='center')
+
+# i = 0
+# for x, y in zip(angx, angy):
+#     label = str(round(rad_to_deg(angles[i])))
+#     i += 1
+#     plt.annotate(label, (x, y), xytext=(0.0, 10.0),
+#                  textcoords="offset points", ha='center')
+
+# plt.show()
