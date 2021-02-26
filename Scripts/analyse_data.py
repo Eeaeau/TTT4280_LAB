@@ -201,69 +201,69 @@ plt.show()
 # plt.tight_layout()
 # plt.show()
 
-# ----------------- find angle --------------
+# ------------------------------------- find angle ----------------------------------------
 
 
-# testa = [1, 0.2, 0, 0, 0, 0, 0, 0]
-# testb = [0, 0, 1, 0.2, 0, 0, 0, 0]
+# # testa = [1, 0.2, 0, 0, 0, 0, 0, 0]
+# # testb = [0, 0, 1, 0.2, 0, 0, 0, 0]
 
-# print("Delaytest", find_lag(testa,testb))
-
-
-# dictonary to hold relative crosscorelations
-n = {}
-
-# Finding the lag in samples for all combinations of microphones, and saving these to n
-for i in range(channels):
-    for j in range(channels):
-        n[str(i+1)+str(j+1)] = find_lag(data_interp[i], data_interp[j])
+# # print("Delaytest", find_lag(testa,testb))
 
 
-xx = np.linspace(-2, 2, 400)
-yy = np.linspace(-2, 2, 400)
-[X, Y] = np.meshgrid(xx, yy)
+# # dictonary to hold relative crosscorelations
+# n = {}
 
-Z = Circle(X, Y)
+# # Finding the lag in samples for all combinations of microphones, and saving these to n
+# for i in range(channels):
+#     for j in range(channels):
+#         n[str(i+1)+str(j+1)] = find_lag(data_interp[i], data_interp[j])
 
-# Arrays for storing the coordinates of angle- and microphone points
-angx = []
-angy = []
-micx = []
-micy = []
 
-microphones = [np.pi/2, 11/6*(np.pi), 7/6*(np.pi)]
-for i in range(len(microphones)):
-    micx.append(np.cos(microphones[i]))
-    micy.append(np.sin(microphones[i]))
+# xx = np.linspace(-2, 2, 400)
+# yy = np.linspace(-2, 2, 400)
+# [X, Y] = np.meshgrid(xx, yy)
 
-angles = []
-# Itererer gjennom alle filene, og finne angle i hver av disse
-# obs 2 er 3 og 3 er 2 (basert på formelen, for vi har flyttet plass på mikrofon 2 og 3)
-angle = find_angle(n["21"], n["31"], n["32"])
-angles.append(angle)
+# Z = Circle(X, Y)
 
-for i in range(len(angles)):
-    angx.append(np.cos(angles[i]))
-    angy.append(np.sin(angles[i]))
+# # Arrays for storing the coordinates of angle- and microphone points
+# angx = []
+# angy = []
+# micx = []
+# micy = []
 
-plt.figure(figsize=(10, 10))
-plt.grid(True)
-plt.contour(X, Y, Z, [1])
-plt.scatter(angx, angy)
-plt.scatter(micx, micy)
+# microphones = [np.pi/2, 11/6*(np.pi), 7/6*(np.pi)]
+# for i in range(len(microphones)):
+#     micx.append(np.cos(microphones[i]))
+#     micy.append(np.sin(microphones[i]))
 
-i = 1
-for x, y in zip(micx, micy):
-    label = "Mic"+str(i)
-    i += 1
-    plt.annotate(label, (x, y), xytext=(0.0, 10.0),
-                 textcoords="offset points", ha='center')
+# angles = []
+# # Itererer gjennom alle filene, og finne angle i hver av disse
+# # obs 2 er 3 og 3 er 2 (basert på formelen, for vi har flyttet plass på mikrofon 2 og 3)
+# angle = find_angle(n["21"], n["31"], n["32"])
+# angles.append(angle)
 
-i = 0
-for x, y in zip(angx, angy):
-    label = str(round(rad_to_deg(angles[i])))
-    i += 1
-    plt.annotate(label, (x, y), xytext=(0.0, 10.0),
-                 textcoords="offset points", ha='center')
+# for i in range(len(angles)):
+#     angx.append(np.cos(angles[i]))
+#     angy.append(np.sin(angles[i]))
 
-plt.show()
+# plt.figure(figsize=(10, 10))
+# plt.grid(True)
+# plt.contour(X, Y, Z, [1])
+# plt.scatter(angx, angy)
+# plt.scatter(micx, micy)
+
+# i = 1
+# for x, y in zip(micx, micy):
+#     label = "Mic"+str(i)
+#     i += 1
+#     plt.annotate(label, (x, y), xytext=(0.0, 10.0),
+#                  textcoords="offset points", ha='center')
+
+# i = 0
+# for x, y in zip(angx, angy):
+#     label = str(round(rad_to_deg(angles[i])))
+#     i += 1
+#     plt.annotate(label, (x, y), xytext=(0.0, 10.0),
+#                  textcoords="offset points", ha='center')
+
+# plt.show()
