@@ -90,7 +90,7 @@ def find_lag(a, b):
 
 
 # Import data from bin file
-sample_period, data = raspi_import('export/radar_test.bin', channels)
+sample_period, data = raspi_import('export/radar_test2.bin', channels)
 
 sample_period *= 1e-6  # change unit to micro seconds
 
@@ -149,7 +149,7 @@ for i in range(channels):
 # Generate frequency axis and take FFT
 freq = np.fft.fftfreq(n=num_interp_samples, d=sample_period_interp)
 
-spectrum = np.empty([channels, len(freq)])
+spectrum = np.empty([channels, len(freq)], dtype = complex)
 
 for i in range(channels):
     # takes FFT of all channels
