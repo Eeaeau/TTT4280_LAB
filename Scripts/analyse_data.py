@@ -3,10 +3,10 @@ import matplotlib.pyplot as plt
 from numpy.core.fromnumeric import shape
 import scipy.signal as signal
 
-channels = 4
+channels = 5
 
 
-def raspi_import(path, channels=4):
+def raspi_import(path, channels=5):
     """
     Import data produced using adc_sampler.c.
     Returns sample period and ndarray with one column per channel.
