@@ -139,12 +139,20 @@ for i in range(channels):
     # removes DC component for each channel
     data_interp[i] = signal.detrend(data_interp[i], axis=0)
 
-#lab3 - radar
-#combined_IQ = data_interp[0] + 1j * data_interp[1]
-#IQ_freq = np.fft.fftfreq(n=num_interp_samples, d=sample_period_interp)
 
-#doppler_spectrum = np.empty([1, len(IQ_freq)])
-#doppler_spectrum[0] = np.fft.fft(combined_IQ, axis=0)
+#lab3 - radar
+
+#Diverse vindusfunksjoner som kan multipliseres med signalet vårt.
+#for i in range(3, channels):
+ #   data_interp[i] = data_interp[i] * np.hamming(num_interp_samples)
+    #data_interp[i] = data_interp[i] * np.hanning(num_interp_samples)
+    #data_interp[i] = data_interp[i] * np.kaiser(num_interp_samples, 1.5) #siste argument gir formen på vinduet
+
+combined_IQ = data_interp[3] + 1j * data_interp[4] # ADC4 = 3, ADC5= 4
+IQ_freq = np.fft.fftfreq(n=num_interp_samples, d=sample_period_interp)
+
+doppler_spectrum = np.empty([1, len(IQ_freq)])
+doppler_spectrum[0] = np.fft.fft(combined_IQ, axis=0)
 
 # Generate frequency axis and take FFT
 freq = np.fft.fftfreq(n=num_interp_samples, d=sample_period_interp)
@@ -163,32 +171,32 @@ for i in range(channels):
 fig = plt.figure(figsize=(16/2.5, 9/2.5))
 
 
-plt.subplot(2, 1, 1)
-plt.title("Time domain signal")
-plt.xlabel("Time [us]")
-plt.ylabel("Voltage")
-plt.grid(True)
+#plt.subplot(2, 1, 1)
+#plt.title("Time domain signal")
+#plt.xlabel("Time [us]")
+#plt.ylabel("Voltage")
+#plt.grid(True)
 # plt.xlim(0.2, .3)
 # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
-for i in range(3, channels):
-    plt.plot(t_interp, data_interp[i])
+#for i in range(3, channels):
+ #   plt.plot(t_interp, data_interp[i])
 # 1VA+1V 2.54Vdd, 500Hz
-plt.legend(["Ch1", "Ch2", "Ch3", "Ch4", "Ch5"])
+#plt.legend(["Ch1", "Ch2", "Ch3", "Ch4", "Ch5"])
 
 # ---------------------- auto corr
 
-corr_12 = np.correlate(data_interp[0], data_interp[1], "full")
+# corr_12 = np.correlate(data_interp[0], data_interp[1], "full")
 
-plt.subplot(2, 1, 2)
-plt.title("Cross correlation")
-plt.xlabel("n")
-plt.ylabel("Cross correlation")
-plt.grid(True)
-plt.stem(range(-int(len(corr_12)/2), int(len(corr_12)/2)+1),
-         corr_12)  # get the power spectrum
-plt.legend(["krysskorr12"])
-plt.tight_layout()
-plt.show()
+# plt.subplot(2, 1, 2)
+# plt.title("Cross correlation")
+# plt.xlabel("n")
+# plt.ylabel("Cross correlation")
+# plt.grid(True)
+# plt.stem(range(-int(len(corr_12)/2), int(len(corr_12)/2)+1),
+#          corr_12)  # get the power spectrum
+# plt.legend(["krysskorr12"])
+# plt.tight_layout()
+# #plt.show()
 
 #plt.subplot(2, 1, 2)
 #plt.title("Power spectrum of signal")
@@ -200,6 +208,32 @@ plt.show()
 #plt.legend(["Ch1", "Ch2", "Ch3"])
 # plt.tight_layout()
 # plt.show()
+
+
+# ----------------------- doppler spektrum - LAB3
+
+plt.subplot(2, 1, 1)
+plt.title("Time domain signal")
+plt.xlabel("Time [us]")
+plt.ylabel("Voltage")
+plt.grid(True)
+# plt.xlim(0.2, .3)
+# plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
+for i in range(3, channels):
+    plt.plot(t_interp, data_interp[i])
+# 1VA+1V 2.54Vdd, 500Hz
+plt.legend(["Ch1", "Ch2", "Ch3"])
+
+plt.subplot(2, 1, 2)
+plt.title("Doppler spectrum of signal")
+plt.xlabel("Frequency [Hz]")
+plt.ylabel("Power [dB]")
+plt.xlim(-1000, 1000)
+plt.plot(IQ_freq, 20*np.log(np.abs(doppler_spectrum[0])))  # get the power spectrum
+plt.legend(["Doppler spectrum"])
+plt.tight_layout()
+plt.show()
+
 
 # ------------------------------------- find angle ----------------------------------------
 
