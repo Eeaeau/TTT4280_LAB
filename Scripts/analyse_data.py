@@ -107,7 +107,7 @@ t = np.linspace(start=0, stop=num_of_samples*sample_period, num=num_of_samples)
 
 # define new constants
 elements_removed = 4000
-num_interp_samples = 2**15
+num_interp_samples = 2**16
 num_of_samples_fixed = num_of_samples - elements_removed
 sample_period_interp = (1-sample_period*elements_removed)/num_interp_samples
 
@@ -170,10 +170,10 @@ plt.ylabel("Voltage")
 plt.grid(True)
 # plt.xlim(0.2, .3)
 # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
-for i in range(channels):
+for i in range(3, channels):
     plt.plot(t_interp, data_interp[i])
 # 1VA+1V 2.54Vdd, 500Hz
-plt.legend(["Ch1", "Ch2", "Ch3"])
+plt.legend(["Ch1", "Ch2", "Ch3", "Ch4", "Ch5"])
 
 # ---------------------- auto corr
 
