@@ -90,7 +90,7 @@ def find_lag(a, b):
 
 
 # Import data from bin file
-sample_period, data = raspi_import('Scripts\export\kinda_working_radar.bin', channels)
+sample_period, data = raspi_import('Scripts/export/2sec_radar_test.bin', channels)
 
 sample_period *= 1e-6  # change unit to micro seconds
 
@@ -107,7 +107,7 @@ t = np.linspace(start=0, stop=num_of_samples*sample_period, num=num_of_samples)
 
 # define new constants
 elements_removed = 4000
-num_interp_samples = 2**16
+num_interp_samples = 2**18
 num_of_samples_fixed = num_of_samples - elements_removed
 sample_period_interp = (1-sample_period*elements_removed)/num_interp_samples
 
@@ -212,6 +212,7 @@ fig = plt.figure(figsize=(16/2.5, 9/2.5))
 
 # ----------------------- doppler spektrum - LAB3
 
+# ------------------ raw data 
 plt.subplot(2, 1, 1)
 plt.title("Time domain signal")
 plt.xlabel("Time [us]")
@@ -220,9 +221,23 @@ plt.grid(True)
 # plt.xlim(0.2, .3)
 # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
 for i in range(3, channels):
-    plt.plot(t_interp, data_interp[i])
+    plt.plot(t, data[:,1])
 # 1VA+1V 2.54Vdd, 500Hz
 plt.legend(["Ch1", "Ch2", "Ch3"])
+
+
+# # ---------------- prossesed 
+# plt.subplot(2, 1, 1)
+# plt.title("Time domain signal")
+# plt.xlabel("Time [us]")
+# plt.ylabel("Voltage")
+# plt.grid(True)
+# # plt.xlim(0.2, .3)
+# # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
+# for i in range(3, channels):
+#     plt.plot(t_interp, data_interp[i])
+# # 1VA+1V 2.54Vdd, 500Hz
+# plt.legend(["Ch1", "Ch2", "Ch3"])
 
 plt.subplot(2, 1, 2)
 plt.title("Doppler spectrum of signal")
