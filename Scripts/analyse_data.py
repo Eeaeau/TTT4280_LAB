@@ -221,7 +221,7 @@ plt.grid(True)
 # plt.xlim(0.2, .3)
 # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
 for i in range(3, channels):
-    plt.plot(t, data[:,1])
+    plt.plot(t, data)
 # 1VA+1V 2.54Vdd, 500Hz
 plt.legend(["Ch1", "Ch2", "Ch3"])
 
