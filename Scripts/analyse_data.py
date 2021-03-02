@@ -90,7 +90,7 @@ def find_lag(a, b):
 
 
 # Import data from bin file
-sample_period, data = raspi_import('Scripts/export/2sec_radar_test.bin', channels)
+sample_period, data = raspi_import('Scripts/export/2sec_radar_test3.bin', channels)
 
 sample_period *= 1e-6  # change unit to micro seconds
 
