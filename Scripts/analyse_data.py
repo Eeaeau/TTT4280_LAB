@@ -212,21 +212,7 @@ fig = plt.figure(figsize=(16/2.5, 9/2.5))
 
 # ----------------------- doppler spektrum - LAB3
 
-# ------------------ raw data 
-plt.subplot(2, 1, 1)
-plt.title("Time domain signal")
-plt.xlabel("Time [us]")
-plt.ylabel("Voltage")
-plt.grid(True)
-# plt.xlim(0.2, .3)
-# plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
-for i in range(3, channels):
-    plt.plot(t, data)
-# 1VA+1V 2.54Vdd, 500Hz
-plt.legend(["Ch1", "Ch2", "Ch3"])
-
-
-# # ---------------- prossesed 
+# # ------------------ raw data 
 # plt.subplot(2, 1, 1)
 # plt.title("Time domain signal")
 # plt.xlabel("Time [us]")
@@ -235,9 +221,23 @@ plt.legend(["Ch1", "Ch2", "Ch3"])
 # # plt.xlim(0.2, .3)
 # # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
 # for i in range(3, channels):
-#     plt.plot(t_interp, data_interp[i])
+#     plt.plot(t, data)
 # # 1VA+1V 2.54Vdd, 500Hz
 # plt.legend(["Ch1", "Ch2", "Ch3"])
+
+
+# # ---------------- prossesed 
+plt.subplot(2, 1, 1)
+plt.title("Time domain signal")
+plt.xlabel("Time [us]")
+plt.ylabel("Voltage")
+plt.grid(True)
+# plt.xlim(0.2, .3)
+# plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
+for i in range(3, channels):
+    plt.plot(t_interp, data_interp[i])
+# 1VA+1V 2.54Vdd, 500Hz
+plt.legend(["Ch1", "Ch2", "Ch3"])
 
 plt.subplot(2, 1, 2)
 plt.title("Doppler spectrum of signal")
