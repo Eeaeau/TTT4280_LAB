@@ -90,7 +90,8 @@ def find_lag(a, b):
 
 
 # Import data from bin file
-sample_period, data = raspi_import('Scripts/export/2sec_radar_test3.bin', channels)
+sample_period, data = raspi_import(
+    'Scripts/export/2sec_radar_test4.bin', channels)
 
 sample_period *= 1e-6  # change unit to micro seconds
 
@@ -142,13 +143,13 @@ for i in range(channels):
 
 #lab3 - radar
 
-#Diverse vindusfunksjoner som kan multipliseres med signalet vårt.
-#for i in range(3, channels):
+# Diverse vindusfunksjoner som kan multipliseres med signalet vårt.
+# for i in range(3, channels):
  #   data_interp[i] = data_interp[i] * np.hamming(num_interp_samples)
     #data_interp[i] = data_interp[i] * np.hanning(num_interp_samples)
-    #data_interp[i] = data_interp[i] * np.kaiser(num_interp_samples, 1.5) #siste argument gir formen på vinduet
+    # data_interp[i] = data_interp[i] * np.kaiser(num_interp_samples, 1.5) #siste argument gir formen på vinduet
 
-combined_IQ = data_interp[3] + 1j * data_interp[4] # ADC4 = 3, ADC5= 4
+combined_IQ = data_interp[3] + 1j * data_interp[4]  # ADC4 = 3, ADC5= 4
 IQ_freq = np.fft.fftfreq(n=num_interp_samples, d=sample_period_interp)
 
 doppler_spectrum = np.empty([1, len(IQ_freq)])
@@ -157,7 +158,7 @@ doppler_spectrum[0] = np.fft.fft(combined_IQ, axis=0)
 # Generate frequency axis and take FFT
 freq = np.fft.fftfreq(n=num_interp_samples, d=sample_period_interp)
 
-spectrum = np.empty([channels, len(freq)], dtype = complex)
+spectrum = np.empty([channels, len(freq)], dtype=complex)
 
 for i in range(channels):
     # takes FFT of all channels
@@ -174,12 +175,12 @@ fig = plt.figure(figsize=(16/2.5, 9/2.5))
 #plt.subplot(2, 1, 1)
 #plt.title("Time domain signal")
 #plt.xlabel("Time [us]")
-#plt.ylabel("Voltage")
-#plt.grid(True)
+# plt.ylabel("Voltage")
+# plt.grid(True)
 # plt.xlim(0.2, .3)
 # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
-#for i in range(3, channels):
- #   plt.plot(t_interp, data_interp[i])
+# for i in range(3, channels):
+#   plt.plot(t_interp, data_interp[i])
 # 1VA+1V 2.54Vdd, 500Hz
 #plt.legend(["Ch1", "Ch2", "Ch3", "Ch4", "Ch5"])
 
@@ -212,7 +213,7 @@ fig = plt.figure(figsize=(16/2.5, 9/2.5))
 
 # ----------------------- doppler spektrum - LAB3
 
-# # ------------------ raw data 
+# # ------------------ raw data
 # plt.subplot(2, 1, 1)
 # plt.title("Time domain signal")
 # plt.xlabel("Time [us]")
@@ -226,7 +227,7 @@ fig = plt.figure(figsize=(16/2.5, 9/2.5))
 # plt.legend(["Ch1", "Ch2", "Ch3"])
 
 
-# # ---------------- prossesed 
+# # ---------------- prossesed
 plt.subplot(2, 1, 1)
 plt.title("Time domain signal")
 plt.xlabel("Time [us]")
@@ -244,7 +245,8 @@ plt.title("Doppler spectrum of signal")
 plt.xlabel("Frequency [Hz]")
 plt.ylabel("Power [dB]")
 plt.xlim(-1000, 1000)
-plt.plot(IQ_freq, 20*np.log(np.abs(doppler_spectrum[0])))  # get the power spectrum
+# get the power spectrum
+plt.plot(IQ_freq, 20*np.log(np.abs(doppler_spectrum[0])))
 plt.legend(["Doppler spectrum"])
 plt.tight_layout()
 plt.show()
