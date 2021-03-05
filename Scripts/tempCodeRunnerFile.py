@@ -1,1 +1,1 @@
-*.5
+doppler_spectrum

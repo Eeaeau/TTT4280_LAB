@@ -95,7 +95,7 @@ def find_lag(a, b):
 
 # Import data from bin file
 sample_period, data = raspi_import(
-    'Scripts/export/2sec_radar_test5.bin', channels)
+    'Scripts/export/2sec_radar_test2.bin', channels)
 
 sample_period *= 1e-6  # change unit to micro seconds
 
@@ -162,7 +162,8 @@ doppler_spectrum[0] = np.fft.fft(combined_IQ, axis=0)
 
 # versjon 2
 doppler_spectrum_v2 = np.fft.fftshift(np.fft.fft(combined_IQ))
-freqs_v2 = np.fft.fftshift(np.fft.fftfreq(num_interp_samples, d=sample_period_interp))
+freqs_v2 = np.fft.fftshift(np.fft.fftfreq(
+    num_interp_samples, d=sample_period_interp))
 
 
 # Generate frequency axis and take FFT
@@ -248,7 +249,7 @@ plt.grid(True)
 for i in range(3, channels):
     plt.plot(t_interp, data_interp[i]/adc_res*max_voltage)
 # 1VA+1V 2.54Vdd, 500Hz
-plt.legend(["Ch1", "Ch2", "Ch3"])
+plt.legend(["Ch1", "Ch2", "Ch3", "Ch4", "Ch5"])
 
 plt.subplot(2, 1, 2)
 plt.title("Doppler spectrum of signal")
