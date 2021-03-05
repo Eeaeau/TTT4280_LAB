@@ -95,7 +95,7 @@ def find_lag(a, b):
 
 # Import data from bin file
 sample_period, data = raspi_import(
-    'Scripts/export/2sec_radar_test6.bin', channels)
+    'Scripts/export/2sec_radar_test7.bin', channels)
 
 sample_period *= 1e-6  # change unit to micro seconds
 
@@ -112,10 +112,13 @@ t = np.linspace(start=0, stop=num_of_samples*sample_period, num=num_of_samples)
 
 # define new constants
 elements_removed = 4000
+sample_duration = num_of_samples/31250
+
 # num_interp_samples = 2**18
 num_interp_samples = int((num_of_samples - elements_removed)*2)
 num_of_samples_fixed = num_of_samples - elements_removed
-sample_period_interp = (1-sample_period*elements_removed)/num_interp_samples
+sample_period_interp = (sample_duration-sample_period *
+                        elements_removed)/num_interp_samples
 
 print("Sample frequency interp", 1/sample_period_interp)
 
@@ -150,9 +153,10 @@ for i in range(channels):
 
 # Diverse vindusfunksjoner som kan multipliseres med signalet vårt.
 # for i in range(3, channels):
- #   data_interp[i] = data_interp[i] * np.hamming(num_interp_samples)
-    #data_interp[i] = data_interp[i] * np.hanning(num_interp_samples)
-    # data_interp[i] = data_interp[i] * np.kaiser(num_interp_samples, 1.5) #siste argument gir formen på vinduet
+    data_interp[i] = data_interp[i] * np.hamming(num_interp_samples)
+    # data_interp[i] = data_interp[i] * np.hanning(num_interp_samples)
+    # siste argument gir formen på vinduet
+    # data_interp[i] = data_interp[i] * np.kaiser(num_interp_samples, 1.5)
 
 combined_IQ = data_interp[3] + 1j * data_interp[4]  # ADC4 = 3, ADC5= 4
 IQ_freq = np.fft.fftfreq(n=num_interp_samples, d=sample_period_interp)
@@ -255,10 +259,10 @@ plt.subplot(2, 1, 2)
 plt.title("Doppler spectrum of signal")
 plt.xlabel("Frequency [Hz]")
 plt.ylabel("Power [dB]")
-plt.xlim(-1000, 1000)
+# plt.xlim(-1000, 1000)
 # get the power spectrum
 #plt.plot(IQ_freq, 20*np.log(np.abs(doppler_spectrum[0])))
-plt.plot(freqs_v2, np.abs(doppler_spectrum_v2))  # in kHz
+plt.plot(freqs_v2, doppler_spectrum_v2)  # in kHz
 plt.legend(["Doppler spectrum"])
 plt.tight_layout()
 plt.show()
