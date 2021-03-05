@@ -3,7 +3,11 @@ import matplotlib.pyplot as plt
 from numpy.core.fromnumeric import shape
 import scipy.signal as signal
 
+
+# ---------- constants
 channels = 5
+max_voltage = 2.7
+adc_res = 4096
 
 
 def raspi_import(path, channels=5):
@@ -91,7 +95,7 @@ def find_lag(a, b):
 
 # Import data from bin file
 sample_period, data = raspi_import(
-    'Scripts/export/2sec_radar_test4.bin', channels)
+    'Scripts/export/2sec_radar_test5.bin', channels)
 
 sample_period *= 1e-6  # change unit to micro seconds
 
@@ -236,7 +240,7 @@ plt.grid(True)
 # plt.xlim(0.2, .3)
 # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
 for i in range(3, channels):
-    plt.plot(t_interp, data_interp[i])
+    plt.plot(t_interp, data_interp[i]/adc_res*max_voltage)
 # 1VA+1V 2.54Vdd, 500Hz
 plt.legend(["Ch1", "Ch2", "Ch3"])
 
