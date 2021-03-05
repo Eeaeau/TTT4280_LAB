@@ -157,9 +157,13 @@ for i in range(channels):
 combined_IQ = data_interp[3] + 1j * data_interp[4]  # ADC4 = 3, ADC5= 4
 IQ_freq = np.fft.fftfreq(n=num_interp_samples, d=sample_period_interp)
 
-# Generate
-doppler_spectrum = np.empty(len(IQ_freq))
-doppler_spectrum = np.fft.fft(combined_IQ, axis=0)
+doppler_spectrum = np.empty([1, len(IQ_freq)])
+doppler_spectrum[0] = np.fft.fft(combined_IQ, axis=0)
+
+# versjon 2
+doppler_spectrum_v2 = np.fft.fftshift(np.fft.fft(combined_IQ))
+freqs_v2 = np.fft.fftshift(np.fft.fftfreq(num_interp_samples, d=sample_period_interp))
+
 
 # Generate frequency axis and take FFT
 freq = np.fft.fftfreq(n=num_interp_samples, d=sample_period_interp)
@@ -250,9 +254,10 @@ plt.subplot(2, 1, 2)
 plt.title("Doppler spectrum of signal")
 plt.xlabel("Frequency [Hz]")
 plt.ylabel("Power [dB]")
-# plt.xlim(-1000, 1000)
+plt.xlim(-1000, 1000)
 # get the power spectrum
-plt.plot(IQ_freq, 20*np.log(np.abs(doppler_spectrum)))
+#plt.plot(IQ_freq, 20*np.log(np.abs(doppler_spectrum[0])))
+plt.plot(freqs_v2, np.abs(doppler_spectrum_v2))  # in kHz
 plt.legend(["Doppler spectrum"])
 plt.tight_layout()
 plt.show()
