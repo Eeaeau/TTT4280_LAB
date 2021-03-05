@@ -112,7 +112,8 @@ t = np.linspace(start=0, stop=num_of_samples*sample_period, num=num_of_samples)
 
 # define new constants
 elements_removed = 4000
-num_interp_samples = 2**18
+# num_interp_samples = 2**18
+num_interp_samples = int((num_of_samples - elements_removed)*2)
 num_of_samples_fixed = num_of_samples - elements_removed
 sample_period_interp = (1-sample_period*elements_removed)/num_interp_samples
 
@@ -248,7 +249,7 @@ plt.subplot(2, 1, 2)
 plt.title("Doppler spectrum of signal")
 plt.xlabel("Frequency [Hz]")
 plt.ylabel("Power [dB]")
-plt.xlim(-1000, 1000)
+# plt.xlim(-1000, 1000)
 # get the power spectrum
 plt.plot(IQ_freq, 20*np.log(np.abs(doppler_spectrum[0])))
 plt.legend(["Doppler spectrum"])
