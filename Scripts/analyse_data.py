@@ -260,6 +260,9 @@ plt.subplot(2, 1, 2)
 plt.title("Doppler spectrum of signal")
 plt.xlabel("Frequency [Hz]")
 plt.ylabel("Power [dB]")
+
+# max speed
+print("max speed is: ", np.argmax(doppler_spectrum_v2, axis=0)/160.87)
 # plt.xlim(-1000, 1000)
 # get the power spectrum
 #plt.plot(IQ_freq, 20*np.log(np.abs(doppler_spectrum[0])))
