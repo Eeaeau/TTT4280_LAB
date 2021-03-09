@@ -1,1 +1,2 @@
-doppler_spectrum
+
+plt.ylabel("Power [dB]")

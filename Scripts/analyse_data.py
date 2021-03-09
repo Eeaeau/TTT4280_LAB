@@ -95,7 +95,7 @@ def find_lag(a, b):
 
 # Import data from bin file
 sample_period, data = raspi_import(
-    'Scripts/export/2sec_radar_test7.bin', channels)
+    'Scripts/export/4sec_radar_away_sample05.bin', channels)
 
 sample_period *= 1e-6  # change unit to micro seconds
 
@@ -111,7 +111,7 @@ t = np.linspace(start=0, stop=num_of_samples*sample_period, num=num_of_samples)
 #   data[:,i] = bandpass_filtering(data[:,i], 400, 600, sample_period, 3)
 
 # define new constants
-elements_removed = 4000
+elements_removed = 1000
 sample_duration = num_of_samples/31250
 
 # num_interp_samples = 2**18
@@ -153,7 +153,7 @@ for i in range(channels):
 
 # Diverse vindusfunksjoner som kan multipliseres med signalet vårt.
 # for i in range(3, channels):
-    data_interp[i] = data_interp[i] * np.hamming(num_interp_samples)
+    # data_interp[i] = data_interp[i] * np.hamming(num_interp_samples)
     # data_interp[i] = data_interp[i] * np.hanning(num_interp_samples)
     # siste argument gir formen på vinduet
     # data_interp[i] = data_interp[i] * np.kaiser(num_interp_samples, 1.5)
@@ -161,8 +161,8 @@ for i in range(channels):
 combined_IQ = data_interp[3] + 1j * data_interp[4]  # ADC4 = 3, ADC5= 4
 IQ_freq = np.fft.fftfreq(n=num_interp_samples, d=sample_period_interp)
 
-doppler_spectrum = np.empty([1, len(IQ_freq)])
-doppler_spectrum[0] = np.fft.fft(combined_IQ, axis=0)
+# doppler_spectrum = np.empty([1, len(IQ_freq)])
+# doppler_spectrum[0] = np.fft.fft(combined_IQ, axis=0)
 
 # versjon 2
 doppler_spectrum_v2 = np.fft.fftshift(np.fft.fft(combined_IQ))
@@ -252,6 +252,7 @@ plt.grid(True)
 # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
 for i in range(3, channels):
     plt.plot(t_interp, data_interp[i]/adc_res*max_voltage)
+
 # 1VA+1V 2.54Vdd, 500Hz
 plt.legend(["Ch1", "Ch2", "Ch3", "Ch4", "Ch5"])
 
