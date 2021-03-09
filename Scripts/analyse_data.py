@@ -111,7 +111,7 @@ t = np.linspace(start=0, stop=num_of_samples*sample_period, num=num_of_samples)
 #   data[:,i] = bandpass_filtering(data[:,i], 400, 600, sample_period, 3)
 
 # define new constants
-elements_removed = 1000
+elements_removed = 40000
 sample_duration = num_of_samples/31250
 
 # num_interp_samples = 2**18
@@ -261,8 +261,8 @@ plt.title("Doppler spectrum of signal")
 plt.xlabel("Frequency [Hz]")
 plt.ylabel("Power [dB]")
 
-# max speed
-print("max speed is: ", np.argmax(doppler_spectrum_v2, axis=0)/160.87)
+# Average speed
+print("Average speed is: ", np.argmax(doppler_spectrum_v2, axis=0)/160.87)
 # plt.xlim(-1000, 1000)
 # get the power spectrum
 #plt.plot(IQ_freq, 20*np.log(np.abs(doppler_spectrum[0])))
