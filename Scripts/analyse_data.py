@@ -262,7 +262,9 @@ plt.xlabel("Frequency [Hz]")
 plt.ylabel("Power [dB]")
 
 # Average speed
-print("Average speed is: ", np.argmax(doppler_spectrum_v2, axis=0)/160.87)
+spectrum_max= np.argmax(doppler_spectrum_v2, axis=0)
+print(spectrum_max)
+print("Average speed is: ", spectrum_max/160.87)
 # plt.xlim(-1000, 1000)
 # get the power spectrum
 #plt.plot(IQ_freq, 20*np.log(np.abs(doppler_spectrum[0])))
