@@ -1,12 +1,12 @@
 import numpy as np
-
+import scipy.integrate as integrate
 
 muabo = np.genfromtxt("Scripts\Blod_Absorbtion\muabo.txt", delimiter=",")
 muabd = np.genfromtxt("Scripts\Blod_Absorbtion\muabd.txt", delimiter=",")
 
-red_wavelength = None # Replace with wavelength in nanometres
-green_wavelength = None # Replace with wavelength in nanometres
-blue_wavelength = None # Replace with wavelength in nanometres
+red_wavelength = 600 # Replace with wavelength in nanometres
+green_wavelength = 520 # Replace with wavelength in nanometres
+blue_wavelength = 460 # Replace with wavelength in nanometres
 
 wavelength = np.array([red_wavelength, green_wavelength, blue_wavelength])
 
@@ -14,6 +14,7 @@ def mua_blood_oxy(x): return np.interp(x, muabo[:, 0], muabo[:, 1])
 def mua_blood_deoxy(x): return np.interp(x, muabd[:, 0], muabd[:, 1])
 
 bvf = 0.01 # Blood volume fraction, average blood amount in tissue
+bvf_bloodvein = 1.00 # Blood volume fraction, average blood amount in pure blood
 oxy = 0.8 # Blood oxygenation
 
 # Absorption coefficient ($\mu_a$ in lab text)
@@ -21,7 +22,8 @@ oxy = 0.8 # Blood oxygenation
 mua_other = 25 # Background absorption due to collagen, et cetera
 mua_blood = (mua_blood_oxy(wavelength)*oxy # Absorption due to
             + mua_blood_deoxy(wavelength)*(1-oxy)) # pure blood
-mua = mua_blood*bvf + mua_other
+mua = mua_blood*bvf + mua_other # mua for tissue
+mua_bloodvein = mua_blood*bvf_bloodvein + mua_other # mua for bloodvein
 
 # reduced scattering coefficient ($\mu_s^\prime$ in lab text)
 # the numerical constants are thanks to N. Bashkatov, E. A. Genina and
@@ -34,3 +36,38 @@ musr = 100 * (17.6*(wavelength/500)**-4 + 18.78*(wavelength/500)**-0.22)
 # Red, green and blue correspond to indexes 0, 1 and 2, respectively
 
 # TODO calculate penetration depth
+
+def penetration_depth(mus, mua):
+    delta = np.sqrt(1/(3*(mus+mua)*mua))
+    return delta
+
+delta = penetration_depth(musr, mua)
+delta_bloodvein = penetration_depth(musr, mua_bloodvein)
+print(delta)
+
+def light_transmission(delta, thickness):
+    steps = thickness/delta
+    # return 0.368**steps*100
+    return np.e**(-1/delta*thickness)
+
+print("prosentage of transmission through finger", light_transmission(delta, 0.015))
+
+def light_reflection_contribution(d, C):
+    return np.e**(-2*d*C)
+
+def total_light_reflected(C, finger_thickness):
+    return integrate.quad(light_reflection_contribution, 0, finger_thickness, args=(C))
+
+print("total reflected", total_light_reflected(1/delta[0], 0.015)[0])
+
+
+print("prosentage of transmission in 300mu bloodvein", light_transmission(delta_bloodvein, 300*10**-6))
+print("prosentage of transmission in 300mu slice of tissue", light_transmission(delta, 300*10**-6))
+
+
+def contrast(Thigh, Tlow):
+    return np.abs(Thigh-Tlow)/Tlow
+
+K=contrast(light_transmission(delta_bloodvein, 300*10**-6), light_transmission(delta, 300*10**-6))
+
+print("kontrast",K)
