@@ -93,98 +93,184 @@ def find_lag(a, b):
     return cross_corr_max-len(a)+1
 
 
-# Import data from bin file
-sample_period, data = raspi_import(
-    'Scripts/export/4sec_radar_away_sample05.bin', channels)
+def find_timeshift(A, B, periode):
+    nsamples = len(A)
+    try:    
+        
+        xcorr = np.correlate(A, B)
+        # delta time array to match xcorr
+        dt = np.arange(1-nsamples, nsamples)
+        return dt[xcorr.argmax()]*periode
+    except:
+        print("unequal lenght")
 
-sample_period *= 1e-6  # change unit to micro seconds
+def read_and_format(string):
+    # Import data from bin file
+    sample_period, data = raspi_import(
+        string, channels)
 
-print("Sampling frequency:", 1/sample_period)
+    sample_period *= 1e-6  # change unit to micro seconds
 
-# Generate time axis
-num_of_samples = data.shape[0]  # returns shape of matrix
-t = np.linspace(start=0, stop=num_of_samples*sample_period, num=num_of_samples)
+    print("Sampling frequency:", 1/sample_period)
+
+    # Generate time axis
+    num_of_samples = data.shape[0]  # returns shape of matrix
+    t = np.linspace(start=0, stop=num_of_samples*sample_period, num=num_of_samples)
 
 
-# Unwanted noise is filtered from the signals
-# for i in range(channels):
-#   data[:,i] = bandpass_filtering(data[:,i], 400, 600, sample_period, 3)
+    # Unwanted noise is filtered from the signals
+    # for i in range(channels):
+    #   data[:,i] = bandpass_filtering(data[:,i], 400, 600, sample_period, 3)
 
-# define new constants
-elements_removed = 40000
-sample_duration = num_of_samples/31250
+    # define new constants
+    elements_removed = 31250*2
+    sample_duration = num_of_samples/31250
 
-# num_interp_samples = 2**18
-num_interp_samples = int((num_of_samples - elements_removed)*2)
-num_of_samples_fixed = num_of_samples - elements_removed
-sample_period_interp = (sample_duration-sample_period *
-                        elements_removed)/num_interp_samples
+    # num_interp_samples = 2**18
+    num_of_samples_fixed = num_of_samples - elements_removed
+    num_interp_samples = int((num_of_samples_fixed)*2)
+    sample_period_interp = (sample_duration-sample_period *
+                            elements_removed)/num_interp_samples
 
-print("Sample frequency interp", 1/sample_period_interp)
+    print("Sample frequency interp", 1/sample_period_interp)
 
-# define new time array
-t_interp = np.linspace(start=0, stop=num_interp_samples *
-                       sample_period_interp, num=num_interp_samples)
+    # define new time array
+    t_interp = np.linspace(start=0, stop=num_interp_samples *
+                        sample_period_interp, num=num_interp_samples)
 
-print(len(t))
-print(t_interp[-1])
+    print(len(t))
+    print(t_interp[-1])
 
-# Defining a new variable data_fixed, which will contain
-data_fixed = np.empty([channels, num_of_samples_fixed])
-data_interp = np.empty([channels, num_interp_samples])
-# x = np.linspace(0, 1, num_interp_samples)
+    # Defining a new variable data_fixed, which will contain
+    data_fixed = np.empty([channels, num_of_samples_fixed])
+    data_interp = np.empty([channels, num_interp_samples])
+    # x = np.linspace(0, 1, num_interp_samples)
 
-for i in range(channels):
-    data_fixed[i] = data[:, i][elements_removed:]
-    data_interp[i] = np.interp(
-        t_interp, t[:num_of_samples_fixed], data_fixed[i])
+    for i in range(channels):
+        data_fixed[i] = data[:, i][elements_removed:]
+        data_interp[i] = np.interp(
+            t_interp, t[:num_of_samples_fixed], data_fixed[i])
 
-print(t[:num_of_samples_fixed].shape)
+    print(t[:num_of_samples_fixed].shape)
 
-print("Fixed", data_fixed.shape)
-print("interp", data_interp.shape)
+    print("Fixed", data_fixed.shape)
+    print("interp", data_interp.shape)
 
-for i in range(channels):
-    # removes DC component for each channel
-    data_interp[i] = signal.detrend(data_interp[i], axis=0)
+    for i in range(channels):
+        # removes DC component for each channel
+        data_interp[i] = signal.detrend(data_interp[i], axis=0)
 
 
 #lab3 - radar
 
 # Diverse vindusfunksjoner som kan multipliseres med signalet vårt.
-# for i in range(3, channels):
-    # data_interp[i] = data_interp[i] * np.hamming(num_interp_samples)
+    for i in range(3, channels):
+        data_interp[i] = data_interp[i] * np.hamming(num_interp_samples)
     # data_interp[i] = data_interp[i] * np.hanning(num_interp_samples)
     # siste argument gir formen på vinduet
     # data_interp[i] = data_interp[i] * np.kaiser(num_interp_samples, 1.5)
 
-combined_IQ = data_interp[3] + 1j * data_interp[4]  # ADC4 = 3, ADC5= 4
-IQ_freq = np.fft.fftfreq(n=num_interp_samples, d=sample_period_interp)
-
-# doppler_spectrum = np.empty([1, len(IQ_freq)])
-# doppler_spectrum[0] = np.fft.fft(combined_IQ, axis=0)
-
-# versjon 2
-doppler_spectrum_v2 = np.fft.fftshift(np.fft.fft(combined_IQ))
-freqs_v2 = np.fft.fftshift(np.fft.fftfreq(
-    num_interp_samples, d=sample_period_interp))
 
 
-# Generate frequency axis and take FFT
-freq = np.fft.fftfreq(n=num_interp_samples, d=sample_period_interp)
+# def doppler_find_average_velocity(data_interp, sample_period_interp):
 
-spectrum = np.empty([channels, len(freq)], dtype=complex)
+    pad_width= 2**12
 
-for i in range(channels):
-    # takes FFT of all channels
-    spectrum[i] = np.fft.fft(data_interp[i], axis=0)
+    # find timeshift ----------------
+    time_shift_val = find_timeshift(data_interp[3], data_interp[4], sample_period_interp)/np.pi
+    print("phaseshift: ", time_shift_val, "pi")
+    # print(int(np.pi-abs(time_shift_val)/sample_period_interp))
+
+    # data_interp[4] = np.roll(data_interp[4], -1000000)
+
+    # time_shift_val2 = find_timeshift(data_interp[3], data_interp[4], sample_period_interp)/np.pi
+
+    # print("timeshift2", time_shift_val2)
+
+    # create fft -------------------------------------
+    combined_IQ = data_interp[3] + 1j * data_interp[4]  # ADC4 = 3, ADC5= 4
+    combined_IQ = np.pad(combined_IQ, pad_width)  # zeropad
+
+    IQ_freq = np.fft.fftfreq(n=len(combined_IQ), d=sample_period_interp)
+    IQ_freq_shifted = np.fft.fftshift(IQ_freq)
+
+    print("lengths" , len(combined_IQ), len(IQ_freq))
+
+    # versjon 2
+    doppler_spectrum_v2 = abs(np.fft.fft(combined_IQ))
+
+    spectrum_max_freq= IQ_freq[np.argmax(abs(doppler_spectrum_v2))]
+    Average_velocity = spectrum_max_freq/160.87
+
+    fig = plt.figure(figsize=(16/2.5, 9/2.5))
+
+    # # ---------------- prossesed
+    plt.subplot(2, 1, 1)
+    plt.title("Time domain signal")
+    plt.xlabel("Time [us]")
+    plt.ylabel("Voltage")
+    plt.grid(True)
+    # plt.xlim(0.2, .3)
+    # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
+    for i in range(3, channels):
+        plt.plot(t_interp, data_interp[i]/adc_res*max_voltage)
+
+    # 1VA+1V 2.54Vdd, 500Hz
+    plt.legend(["Ch1", "Ch2", "Ch3", "Ch4", "Ch5"])
+
+    plt.subplot(2, 1, 2)
+    plt.title("Doppler spectrum of signal")
+    plt.xlabel("Frequency [Hz]")
+    plt.ylabel("Power [dB]")
+
+    # Average speed
+    print("freq: ", spectrum_max_freq)
+    print("max power: ", max(doppler_spectrum_v2))
+
+    
+    # print("Average speed is: ", spectrum_max_freq/160.87)
+    print(IQ_freq)
+    plt.xlim(-1000, 1000)
+    # get the power spectrum
+    #plt.plot(IQ_freq, 20*np.log(np.abs(doppler_spectrum[0])))
+    plt.plot(IQ_freq, doppler_spectrum_v2)  # in kHz
+    plt.legend(["Doppler spectrum"])
+    plt.tight_layout()
+    plt.show()
+
+    return Average_velocity
+
+measured_avarage_velocity = []
+
+# for i in range(2):
+#     for j in range(10):
+#         try:
+#             measured_avarage_velocity.append(read_and_format("Scripts/export/4sec_radar_away_sample"+str(i)+str(j)+".bin"))
+#         except:
+#             # exit()
+#             print(measured_avarage_velocity)
+#         # doppler_find_average_velocity(, sample_period_interp)
+
+read_and_format("Scripts/export/4sec_radar_away_sample"+str(10)+".bin")
+
+print(measured_avarage_velocity)
+
+# # Generate frequency axis and take FFT
+# freq = np.fft.fftfreq(n=num_interp_samples, d=sample_period_interp)
+
+# spectrum = np.empty([channels, len(freq)], dtype=complex)
+
+
+# for i in range(channels):
+#     # takes FFT of all channels
+#     spectrum[i] = np.fft.fft(data_interp[i], axis=0)
 
 # print(freq.shape, spectrum.shape )
 
 # Plot the results in two subplots
 # NOTICE: This lazily plots the entire matrixes. All the channels will be put into the same plots.
 # If you want a single channel, use data[:,n] to get channel n
-fig = plt.figure(figsize=(16/2.5, 9/2.5))
+# fig = plt.figure(figsize=(16/2.5, 9/2.5))
 
 
 #plt.subplot(2, 1, 1)
@@ -242,36 +328,6 @@ fig = plt.figure(figsize=(16/2.5, 9/2.5))
 # plt.legend(["Ch1", "Ch2", "Ch3"])
 
 
-# # ---------------- prossesed
-plt.subplot(2, 1, 1)
-plt.title("Time domain signal")
-plt.xlabel("Time [us]")
-plt.ylabel("Voltage")
-plt.grid(True)
-# plt.xlim(0.2, .3)
-# plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
-for i in range(3, channels):
-    plt.plot(t_interp, data_interp[i]/adc_res*max_voltage)
-
-# 1VA+1V 2.54Vdd, 500Hz
-plt.legend(["Ch1", "Ch2", "Ch3", "Ch4", "Ch5"])
-
-plt.subplot(2, 1, 2)
-plt.title("Doppler spectrum of signal")
-plt.xlabel("Frequency [Hz]")
-plt.ylabel("Power [dB]")
-
-# Average speed
-spectrum_max= np.argmax(doppler_spectrum_v2, axis=0)
-print(spectrum_max)
-print("Average speed is: ", spectrum_max/160.87)
-# plt.xlim(-1000, 1000)
-# get the power spectrum
-#plt.plot(IQ_freq, 20*np.log(np.abs(doppler_spectrum[0])))
-plt.plot(freqs_v2, doppler_spectrum_v2)  # in kHz
-plt.legend(["Doppler spectrum"])
-plt.tight_layout()
-plt.show()
 
 
 # ------------------------------------- find angle ----------------------------------------
