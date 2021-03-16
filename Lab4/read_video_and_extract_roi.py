@@ -21,6 +21,9 @@ Requirements:
 import sys
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
+from numpy.core.fromnumeric import shape
+import scipy.signal as signal
 
 #CLI options
 if len(sys.argv) < 3:
@@ -66,3 +69,10 @@ cap.release()
 #save to file in order R, G, B.
 np.savetxt(output_filename, np.flip(mean_signal, 1))
 print("Data saved to '" + output_filename + "', fps = " + str(fps) + " frames/second")
+
+
+
+# ------------------ || plot data || -----------------------
+
+
+plt.plot(mean_signal[0])
