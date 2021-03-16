@@ -76,3 +76,4 @@ print("Data saved to '" + output_filename + "', fps = " + str(fps) + " frames/se
 
 
 plt.plot(mean_signal[0])
+plt.show()
