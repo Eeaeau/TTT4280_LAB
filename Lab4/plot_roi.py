@@ -19,8 +19,8 @@ def import_and_format(path, fps):
 
     with open(path, 'r') as fid:
         data = np.fromfile(fid, dtype=float)
-        data = data.reshape((-1, 3))
-        t = np.linspace(1/fps*len(data))
+        # data = data.reshape((-1, 3))
+        t = np.linspace(0,30, 1/fps*2)
     return t, data
 
 
