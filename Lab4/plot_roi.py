@@ -6,7 +6,7 @@ import scipy.signal as signal
 
 # ---------- constants ----------------
 
-path = "export/finger_test.txt"
+path = "export/finger_rec2.txt"
 fps = 40
 
 # ----------- functions ------------- 
@@ -46,5 +46,5 @@ def import_and_format(path, fps):
 t, data = import_and_format(path, fps)
 
 print(data[0])
-plt.plot(t, data[0])
+plt.plot(t, data[2])
 plt.show()
