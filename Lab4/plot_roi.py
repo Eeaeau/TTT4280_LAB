@@ -20,8 +20,9 @@ def import_and_format(path, fps):
         r = np.empty(total_images, dtype=float)
         g = np.empty(total_images, dtype=float)
         b = np.empty(total_images, dtype=float)
-        for line in lines:
-            line = [float(e) for e in line.split()]
+        for newline in lines:
+            line = [float(e) for e in newline.split()]
+            
             # print(line)
             r[i] = line[0]
             g[i] = line[1]
@@ -46,5 +47,15 @@ def import_and_format(path, fps):
 t, data = import_and_format(path, fps)
 
 print(data[0])
-plt.plot(t, data[2])
+plt.plot(t, data[1], label='data')
+#plt.show()
+
+
+
+fc = 2  # Cut-off frequency of the filter
+w = fc / (fps / 2) # Normalize the frequency
+b, a = signal.butter(20, w, 'low')
+output = signal.filtfilt(b, a, data[1])
+plt.plot(t, output, label='filtered')
+plt.legend()
 plt.show()
