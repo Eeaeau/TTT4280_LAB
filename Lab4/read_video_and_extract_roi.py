@@ -25,16 +25,17 @@ import matplotlib.pyplot as plt
 from numpy.core.fromnumeric import shape
 import scipy.signal as signal
 
-#CLI options
+# CLI options
 if len(sys.argv) < 3:
     print("Select smaller ROI of a video file, and save the mean of each image channel to file, one column per color channel (R, G, B), each row corresponding to a video frame number.")
     print("")
-    print("Usage:\npython " + sys.argv[0] + " [path to input video file] [path to output data file]")
+    print("Usage:\npython " +
+          sys.argv[0] + " [path to input video file] [path to output data file]")
     exit()
 filename = sys.argv[1]
 output_filename = sys.argv[2]
 
-#read video file
+# read video file
 cap = cv2.VideoCapture(filename, cv2.CAP_FFMPEG)
 if not cap.isOpened():
     print("Could not open input file. Wrong filename, or your OpenCV package might not be built with FFMPEG support. See docstring of this Python script.")
@@ -45,31 +46,33 @@ fps = cap.get(cv2.CAP_PROP_FPS)
 
 mean_signal = np.zeros((num_frames, 3))
 
-#loop through the video
+# loop through the video
 count = 0
 while cap.isOpened():
-    ret, frame = cap.read() #'frame' is a normal numpy array of dimensions [height, width, 3], in order BGR
+    # 'frame' is a normal numpy array of dimensions [height, width, 3], in order BGR
+    ret, frame = cap.read()
     if not ret:
         break
 
-    #display window for selection of ROI
+    # display window for selection of ROI
     if count == 0:
         window_text = 'Select ROI by dragging the mouse, and press SPACE or ENTER once satisfied.'
-        ROI = cv2.selectROI(window_text, frame) #ROI contains: [x, y, w, h] for selected rectangle
+        # ROI contains: [x, y, w, h] for selected rectangle
+        ROI = cv2.selectROI(window_text, frame)
         cv2.destroyWindow(window_text)
         print("Looping through video.")
 
-    #calculate mean
+    # calculate mean
     cropped_frame = frame[ROI[1]:ROI[1] + ROI[3], ROI[0]:ROI[0] + ROI[2], :]
-    mean_signal[count, :] = np.mean(cropped_frame, axis=(0,1))
+    mean_signal[count, :] = np.mean(cropped_frame, axis=(0, 1))
     count = count + 1
 
 cap.release()
 
-#save to file in order R, G, B.
+# save to file in order R, G, B.
 np.savetxt(output_filename, np.flip(mean_signal, 1))
-print("Data saved to '" + output_filename + "', fps = " + str(fps) + " frames/second")
-
+print("Data saved to '" + output_filename +
+      "', fps = " + str(fps) + " frames/second")
 
 
 # ------------------ || plot data || -----------------------

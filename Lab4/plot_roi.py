@@ -1,8 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.core.fromnumeric import shape
+from numpy.testing._private.utils import measure
 import scipy.signal as signal
-
+import statistics
 
 # ---------- constants ----------------
 
@@ -44,35 +45,42 @@ def import_and_format(path, fps):
 # ------------------- main
 # plt.subplot(2, 1, 1)
 # t, data = import_and_format(path, fps)
-t, data = import_and_format(path, fps)
+n_mesurements = 2
+pulse_rgb = np.empty(3)
 
-# print(data[0])
-# plt.plot(t, data[1], label='data')
-# plt.show()
+for n in range(n_mesurements):
+    t, data = import_and_format("export/asta_puls"+str(n+1), fps)
+
+    # print(data[0])
+    # plt.plot(t, data[1], label='data')
+    # plt.show()
+
+    fc = 2  # Cut-off frequency of the filter
+    w = fc / (fps / 2)  # Normalize the frequency
+    b, a = signal.butter(20, w, 'low')
+    output = signal.filtfilt(b, a, data)
+    # plt.plot(t, output, label='filtered_lp')
+
+    fc_hp = 0.5  # Cut-off frequency of the filter
+    w = fc_hp / (fps / 2)  # Normalize the frequency
+    b, a = signal.butter(2, w, 'highpass')
+    output_hp = signal.filtfilt(b, a, output)
+    plt.plot(t, output_hp[1], label='filtered_lphp')
+    plt.legend()
+    plt.show()
+
+    # freq_max = []
+    # plt.subplots(2, 1, 2)
+    spectrum = plt.magnitude_spectrum(output_hp, fps*60, window=np.hamming(
+        len(output_hp)), pad_to=len(output_hp)+100, scale='dB')
+
+    for i in range(3):
+        np.append(pulse_rgb[i], (spectrum[i][np.argmax(spectrum[i])]))
+    # plt.axvline(freq_max, color='r')
+    # plt.show()
+
+    # pulse_rgb.append(freq_max)
 
 
-fc = 2  # Cut-off frequency of the filter
-w = fc / (fps / 2)  # Normalize the frequency
-b, a = signal.butter(20, w, 'low')
-output = signal.filtfilt(b, a, data[1])
-plt.plot(t, output, label='filtered_lp')
-
-fc_hp = 0.5  # Cut-off frequency of the filter
-w = fc_hp / (fps / 2)  # Normalize the frequency
-b, a = signal.butter(2, w, 'highpass')
-output_hp = signal.filtfilt(b, a, output)
-plt.plot(t, output_hp, label='filtered_lphp')
-plt.legend()
-plt.show()
-
-
-# plt.subplots(2, 1, 2)
-
-x = plt.magnitude_spectrum(output_hp, fps*60, window=np.hamming(
-    len(output_hp)), pad_to=len(output_hp)+100, scale='dB')
-freq_max = x[1][np.argmax(x[0])]
-plt.axvline(freq_max, color='r')
-plt.show()
-
-
-print(freq_max)
+print("Standard Deviation of sample is % s "
+      % (statistics.stdev(pulse_rgb[0])))
