@@ -68,6 +68,6 @@ plt.show()
 
 # plt.subplots(2, 1, 2)
 
-plt.magnitude_spectrum(output, fps, window=np.hamming(
-    len(output)), pad_to=len(output)+100, scale='dB')
+plt.magnitude_spectrum(output_hp, fps, window=np.hamming(
+    len(output_hp)), pad_to=len(output_hp)+100, scale='dB')
 plt.show()
