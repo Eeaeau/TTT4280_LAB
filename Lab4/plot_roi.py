@@ -69,9 +69,10 @@ plt.show()
 # plt.subplots(2, 1, 2)
 
 x = plt.magnitude_spectrum(output_hp, fps*60, window=np.hamming(
-    len(output_hp)), pad_to=len(output_hp)+100, scale='dB')[0]
+    len(output_hp)), pad_to=len(output_hp)+100, scale='dB')
+freq_max = x[1][np.argmax(x[0])]
+plt.axvline(freq_max, color='r')
 plt.show()
 
-freq_max = np.argmax(x)
 
-print(freq_max*1/fps*60)
+print(freq_max)
