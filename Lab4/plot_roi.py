@@ -55,9 +55,16 @@ fc = 2  # Cut-off frequency of the filter
 w = fc / (fps / 2)  # Normalize the frequency
 b, a = signal.butter(20, w, 'low')
 output = signal.filtfilt(b, a, data[1])
-plt.plot(t, output, label='filtered')
+plt.plot(t, output, label='filtered_lp')
+
+fc_hp = 0.5  # Cut-off frequency of the filter
+w = fc_hp / (fps / 2) # Normalize the frequency
+b, a = signal.butter(2, w, 'highpass')
+output_hp = signal.filtfilt(b, a, output)
+plt.plot(t, output_hp, label='filtered_lphp')
 plt.legend()
 plt.show()
+
 
 # plt.subplots(2, 1, 2)
 
