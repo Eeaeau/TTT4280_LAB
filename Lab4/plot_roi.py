@@ -84,3 +84,6 @@ for n in range(n_mesurements):
 
 print("Standard Deviation of sample is % s "
       % (statistics.stdev(pulse_rgb[0])))
+
+print("Standard Deviation of sample is % s "
+      % (statistics.mean(pulse_rgb[0])))
