@@ -9,11 +9,13 @@ import scipy.signal as signal
 path = "export/finger_rec2.txt"
 fps = 40
 
-# ----------- functions ------------- 
+# ----------- functions -------------
+
+
 def import_and_format(path, fps):
     with open(path, 'r') as fid:
         lines = fid.readlines()
-        i=0
+        i = 0
         total_images = len(lines)
 
         data = np.empty([3, total_images], dtype=float)
@@ -22,12 +24,12 @@ def import_and_format(path, fps):
         b = np.empty(total_images, dtype=float)
         for newline in lines:
             line = [float(e) for e in newline.split()]
-            
+
             # print(line)
             r[i] = line[0]
             g[i] = line[1]
             b[i] = line[2]
-            i+=1
+            i += 1
 
         # print(len(lines))
         data[0] = r
@@ -35,27 +37,29 @@ def import_and_format(path, fps):
         data[2] = b
         # data = np.fromfile(fid)
         # # data = data.reshape((-1, 3))
-        t = np.linspace(0,30, total_images)
+        t = np.linspace(0, 30, total_images)
     return t, data
 
 
-
-
-# ------------------- main 
-
+# ------------------- main
+# plt.subplot(2, 1, 1)
 # t, data = import_and_format(path, fps)
 t, data = import_and_format(path, fps)
 
-print(data[0])
-plt.plot(t, data[1], label='data')
-#plt.show()
-
+# print(data[0])
+# plt.plot(t, data[1], label='data')
+# plt.show()
 
 
 fc = 2  # Cut-off frequency of the filter
-w = fc / (fps / 2) # Normalize the frequency
+w = fc / (fps / 2)  # Normalize the frequency
 b, a = signal.butter(20, w, 'low')
 output = signal.filtfilt(b, a, data[1])
 plt.plot(t, output, label='filtered')
 plt.legend()
+plt.show()
+
+# plt.subplots(2, 1, 2)
+
+plt.magnitude_spectrum(output, 1/fps, scale='dB')
 plt.show()
