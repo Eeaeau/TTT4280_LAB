@@ -6,7 +6,7 @@ import scipy.signal as signal
 
 # ---------- constants ----------------
 
-path = "export/finger_rec2.txt"
+path = "export/asta_puls.txt"
 fps = 40
 
 # ----------- functions -------------
