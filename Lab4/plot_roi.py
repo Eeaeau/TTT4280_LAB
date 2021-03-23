@@ -45,12 +45,12 @@ def import_and_format(path, fps):
 # ------------------- main
 # plt.subplot(2, 1, 1)
 # t, data = import_and_format(path, fps)
-n_mesurements = 2
+n_mesurements = 5
 pulse_rgb = [[],[],[]]
 colors = ["r", "g", "b"]
 
 for n in range(n_mesurements):
-    t, data = import_and_format("export/finger_rec"+str(n+1)+".txt", fps)
+    t, data = import_and_format("export/asta_puls_reflektans_panne"+str(n+1)+".txt", fps)
     # print(data[0])
     # plt.plot(t, data[1], label='data')
     # plt.show()
@@ -97,7 +97,7 @@ for n in range(n_mesurements):
 print(pulse_rgb)
 
 print("Standard Deviation of sample is % s "
-      % (statistics.stdev(pulse_rgb[0])))
+      % (statistics.stdev(pulse_rgb[1])))
 
 print("Mean of sample is % s "
-      % (statistics.mean(pulse_rgb[0])))
+      % (statistics.mean(pulse_rgb[1])))
