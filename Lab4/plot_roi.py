@@ -64,7 +64,7 @@ for n in range(n_mesurements):
     w = fc_hp / (fps / 2)  # Normalize the frequency
     b, a = signal.butter(2, w, 'highpass')
     output_hp = signal.filtfilt(b, a, output)
-    print(output_hp)
+    print("hp", output_hp)
     plt.plot(t, output_hp[1], label='filtered_lphp')
     plt.legend()
     plt.show()
@@ -72,14 +72,15 @@ for n in range(n_mesurements):
     # freq_max = []
     # plt.subplots(2, 1, 2)
 
-    for channel in range(3):
-        spectrum = plt.magnitude_spectrum(output_hp[channel], fps*60, window=np.hamming(len(output_hp[channel])), pad_to=len(output_hp[channel])+100, scale='dB')
-        print("spectrum: ",(spectrum[0]))
-        pulse = spectrum[np.argmax(spectrum[1])]
-        print("pulse: ", pulse)
+    for channel in output_hp:
+        spectrum = plt.magnitude_spectrum(channel, fps*60, window=np.hamming(len(channel)), pad_to=len(channel)+100, scale='dB')
+        print("spectrum: ",max(spectrum[1]))
+        # pulse = spectrum[np.argmax(spectrum[0])]
+        # print("pulse: ", pulse)
+        
         # pulse_rgb[channel, n] = spectrum[np.argmax(spectrum)]
         # np.append(pulse_rgb[channel], ) 
-
+    plt.show()
     # plt.axvline(freq_max, color='r')
     # plt.show()
 
