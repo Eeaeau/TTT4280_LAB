@@ -46,11 +46,10 @@ def import_and_format(path, fps):
 # plt.subplot(2, 1, 1)
 # t, data = import_and_format(path, fps)
 n_mesurements = 2
-pulse_rgb = np.empty(3)
+pulse_rgb = np.array(3)
 
 for n in range(n_mesurements):
     t, data = import_and_format("export/finger_rec"+str(n+1)+".txt", fps)
-
     # print(data[0])
     # plt.plot(t, data[1], label='data')
     # plt.show()
@@ -65,17 +64,22 @@ for n in range(n_mesurements):
     w = fc_hp / (fps / 2)  # Normalize the frequency
     b, a = signal.butter(2, w, 'highpass')
     output_hp = signal.filtfilt(b, a, output)
+    print(output_hp)
     plt.plot(t, output_hp[1], label='filtered_lphp')
     plt.legend()
     plt.show()
 
     # freq_max = []
     # plt.subplots(2, 1, 2)
-    spectrum = plt.magnitude_spectrum(output_hp, fps*60, window=np.hamming(
-        len(output_hp)), pad_to=len(output_hp)+100, scale='dB')
 
-    for i in range(3):
-        np.append(pulse_rgb[i], (spectrum[i][np.argmax(spectrum[i])]))
+    for channel in range(3):
+        spectrum = plt.magnitude_spectrum(output_hp[channel], fps*60, window=np.hamming(len(output_hp[channel])), pad_to=len(output_hp[channel])+100, scale='dB')
+        print("spectrum: ",(spectrum[0]))
+        pulse = spectrum[np.argmax(spectrum[1])]
+        print("pulse: ", pulse)
+        # pulse_rgb[channel, n] = spectrum[np.argmax(spectrum)]
+        # np.append(pulse_rgb[channel], ) 
+
     # plt.axvline(freq_max, color='r')
     # plt.show()
 
