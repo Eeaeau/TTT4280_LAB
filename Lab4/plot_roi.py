@@ -46,7 +46,7 @@ def import_and_format(path, fps):
 # plt.subplot(2, 1, 1)
 # t, data = import_and_format(path, fps)
 n_mesurements = 2
-pulse_rgb = np.array(3)
+pulse_rgb = [[],[],[]]
 colors = ["r", "g", "b"]
 
 for n in range(n_mesurements):
@@ -72,14 +72,15 @@ for n in range(n_mesurements):
 
     # freq_max = []
     # plt.subplots(2, 1, 2)
-    i = 0
-    for channel in output_hp:
-        spectrum = plt.magnitude_spectrum(channel, fps*60, window=np.hamming(len(channel)), pad_to=len(channel)+100, scale='dB', color=colors[i])
-        i += 1
+    # i = 0
+    for i in range(3):
+        spectrum = plt.magnitude_spectrum(output_hp[i], fps*60, window=np.hamming(len(output_hp[i])), pad_to=len(output_hp[i])+100, scale='dB', color=colors[i])
         print("spectrum: ",max(spectrum[1]))
         # pulse = spectrum[np.argmax(spectrum[0])]
         pulse = spectrum[1][np.argmax(spectrum[0])]
         print("pulse: ", pulse)
+        pulse_rgb[i].append(pulse)
+        # i += 1
         # try:
         #     pulse_rgb[channel].append(pulse)
         #     print(":)")
@@ -93,9 +94,10 @@ for n in range(n_mesurements):
 
     # pulse_rgb.append(freq_max)
 
+print(pulse_rgb)
 
 print("Standard Deviation of sample is % s "
       % (statistics.stdev(pulse_rgb[0])))
 
-print("Standard Deviation of sample is % s "
+print("Mean of sample is % s "
       % (statistics.mean(pulse_rgb[0])))
