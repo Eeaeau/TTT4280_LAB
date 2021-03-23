@@ -76,7 +76,8 @@ for n in range(n_mesurements):
         spectrum = plt.magnitude_spectrum(channel, fps*60, window=np.hamming(len(channel)), pad_to=len(channel)+100, scale='dB')
         print("spectrum: ",max(spectrum[1]))
         # pulse = spectrum[np.argmax(spectrum[0])]
-        # print("pulse: ", pulse)
+        pulse = spectrum[1][np.argmax(spectrum[0])]
+        print("pulse: ", pulse)
         
         # pulse_rgb[channel, n] = spectrum[np.argmax(spectrum)]
         # np.append(pulse_rgb[channel], ) 
