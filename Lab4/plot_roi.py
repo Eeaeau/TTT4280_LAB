@@ -46,12 +46,13 @@ def import_and_format(path, fps):
 # plt.subplot(2, 1, 1)
 # t, data = import_and_format(path, fps)
 n_mesurements = 5
-pulse_rgb = np.empty([3,n_mesurements])
+pulse_rgb = np.empty([3, n_mesurements])
 # pulse_rgb = [[],[],[]]
 colors = ["r", "g", "b"]
 
 for n in range(n_mesurements):
-    t, data = import_and_format("export/asta_puls_reflektans_panne"+str(n+1)+".txt", fps)
+    t, data = import_and_format(
+        "export/seb_puls_transmitans_ref_pekefing"+str(n+1)+".txt", fps)
     # print(data[0])
     # plt.plot(t, data[1], label='data')
     # plt.show()
@@ -66,7 +67,7 @@ for n in range(n_mesurements):
     w = fc_hp / (fps / 2)  # Normalize the frequency
     b, a = signal.butter(2, w, 'highpass')
     output_hp = signal.filtfilt(b, a, output)
-    print("hp", output_hp)
+    # print("hp", output_hp)
     plt.plot(t, output_hp[1], label='filtered_lphp')
     plt.legend()
     plt.show()
@@ -75,19 +76,20 @@ for n in range(n_mesurements):
     # plt.subplots(2, 1, 2)
     # i = 0
     for i in range(3):
-        spectrum = plt.magnitude_spectrum(output_hp[i], fps*60, window=np.hamming(len(output_hp[i])), pad_to=len(output_hp[i])+100, scale='dB', color=colors[i])
-        print("spectrum: ",max(spectrum[1]))
+        spectrum = plt.magnitude_spectrum(output_hp[i], fps*60, window=np.hamming(
+            len(output_hp[i])), pad_to=len(output_hp[i])+100, scale='dB', color=colors[i])
+        # print("spectrum: ",max(spectrum[1]))
         # pulse = spectrum[np.argmax(spectrum[0])]
         pulse = spectrum[1][np.argmax(spectrum[0])]
         print("pulse: ", pulse)
         # pulse_rgb[i].append(pulse)
         # i += 1
         # try:
-        pulse_rgb[i][n]=(pulse)
+        pulse_rgb[i][n] = pulse
         #     print(":)")
         # except:
         #     print("error")
-        # np.append(pulse_rgb[channel], pulse) 
+        # np.append(pulse_rgb[channel], pulse)
 
     plt.show()
     # plt.axvline(freq_max, color='r')
@@ -99,7 +101,7 @@ print(pulse_rgb)
 
 for channel in pulse_rgb:
     print("Standard Deviation of sample is % s "
-        % (statistics.stdev(channel)))
+          % (statistics.stdev(channel)))
 
     print("Mean of sample is % s "
-        % (statistics.mean(channel)))
+          % (statistics.mean(channel)))
