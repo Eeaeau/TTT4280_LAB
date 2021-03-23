@@ -46,7 +46,8 @@ def import_and_format(path, fps):
 # plt.subplot(2, 1, 1)
 # t, data = import_and_format(path, fps)
 n_mesurements = 5
-pulse_rgb = [[],[],[]]
+pulse_rgb = np.empty([3,n_mesurements])
+# pulse_rgb = [[],[],[]]
 colors = ["r", "g", "b"]
 
 for n in range(n_mesurements):
@@ -79,10 +80,10 @@ for n in range(n_mesurements):
         # pulse = spectrum[np.argmax(spectrum[0])]
         pulse = spectrum[1][np.argmax(spectrum[0])]
         print("pulse: ", pulse)
-        pulse_rgb[i].append(pulse)
+        # pulse_rgb[i].append(pulse)
         # i += 1
         # try:
-        #     pulse_rgb[channel].append(pulse)
+        pulse_rgb[i][n]=(pulse)
         #     print(":)")
         # except:
         #     print("error")
@@ -96,8 +97,9 @@ for n in range(n_mesurements):
 
 print(pulse_rgb)
 
-print("Standard Deviation of sample is % s "
-      % (statistics.stdev(pulse_rgb[1])))
+for channel in pulse_rgb:
+    print("Standard Deviation of sample is % s "
+        % (statistics.stdev(channel)))
 
-print("Mean of sample is % s "
-      % (statistics.mean(pulse_rgb[1])))
+    print("Mean of sample is % s "
+        % (statistics.mean(channel)))
