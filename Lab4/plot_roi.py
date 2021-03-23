@@ -47,6 +47,7 @@ def import_and_format(path, fps):
 # t, data = import_and_format(path, fps)
 n_mesurements = 2
 pulse_rgb = np.array(3)
+colors = ["r", "g", "b"]
 
 for n in range(n_mesurements):
     t, data = import_and_format("export/finger_rec"+str(n+1)+".txt", fps)
@@ -71,9 +72,10 @@ for n in range(n_mesurements):
 
     # freq_max = []
     # plt.subplots(2, 1, 2)
-
+    i = 0
     for channel in output_hp:
-        spectrum = plt.magnitude_spectrum(channel, fps*60, window=np.hamming(len(channel)), pad_to=len(channel)+100, scale='dB')
+        spectrum = plt.magnitude_spectrum(channel, fps*60, window=np.hamming(len(channel)), pad_to=len(channel)+100, scale='dB', color=colors[i])
+        i += 1
         print("spectrum: ",max(spectrum[1]))
         # pulse = spectrum[np.argmax(spectrum[0])]
         pulse = spectrum[1][np.argmax(spectrum[0])]
