@@ -49,7 +49,7 @@ n_mesurements = 2
 pulse_rgb = np.empty(3)
 
 for n in range(n_mesurements):
-    t, data = import_and_format("export/asta_puls"+str(n+1), fps)
+    t, data = import_and_format("export/finger_rec"+str(n+1)+".txt", fps)
 
     # print(data[0])
     # plt.plot(t, data[1], label='data')
