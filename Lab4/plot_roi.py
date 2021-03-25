@@ -53,6 +53,7 @@ colors = ["r", "g", "b"]
 for n in range(n_mesurements):
     t, data = import_and_format(
         "export/seb_puls_transmitans_ref_pekefing"+str(n+1)+".txt", fps)
+    #t, data = import_and_format("export/asta_puls.txt", fps) # file used for SNR
     # print(data[0])
     # plt.plot(t, data[1], label='data')
     # plt.show()
@@ -84,6 +85,35 @@ for n in range(n_mesurements):
 
         # pulse_rgb[i][n] = pulse
         pulse_rgb[i].append(pulse)
+
+        # ---------- SNR -------------
+        interestSignal = 0
+        noise = 0
+
+        # Find the lower and upper frequency limit of the interest signal
+        lF = np.floor(pulse) 
+        uF = np.ceil(pulse)
+
+        freqs = spectrum[1]
+        magnitude = spectrum[0]
+
+        index = np.argwhere((lF<=freqs) & (uF>=freqs))
+        for j in range(len(index)):
+            interestSignal += magnitude[index[j]]
+        interestSignalAvg = interestSignal / len(index)
+
+        #index = np.argwhere((lF>freqs) | (freqs>uF)) # Everything except pulse signal is noise
+        index = np.argwhere(((lF>freqs)& (freqs>=40))  | ((freqs>uF) & (freqs<=230))) # Everything except pulse signal in expected pulse area, 40-230bpm, is noise
+        #index = np.argwhere(((lF>freqs)& (freqs>=60))  | ((freqs>uF) & (freqs<=100))) # Everything except pulse signal in expected pulse area for this test, 60-100bpm, is noise
+        for j in range(len(index)):
+            noise += magnitude[index[j]]
+        noiseAvg = noise / len(index)  
+        
+        #Bruker ikke-skalerte amplitudeverdier (så de er ikke i dB)
+        print("Interessesnitt for fargekanal", colors[i], ":", interestSignalAvg)
+        print("Snitt av støy", noiseAvg)
+        print("SNR (snitt av interesse/snitt av noise) for fargekanal", colors[i], ":", (interestSignalAvg)/(noiseAvg))
+
 
     plt.show()
 
