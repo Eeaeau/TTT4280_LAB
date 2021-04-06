@@ -95,14 +95,15 @@ def find_lag(a, b):
 
 def find_timeshift(A, B, periode):
     nsamples = len(A)
-    try:    
-        
+    try:
+
         xcorr = np.correlate(A, B)
         # delta time array to match xcorr
         dt = np.arange(1-nsamples, nsamples)
         return dt[xcorr.argmax()]*periode
     except:
         print("unequal lenght")
+
 
 def read_and_format(string):
     # Import data from bin file
@@ -115,8 +116,8 @@ def read_and_format(string):
 
     # Generate time axis
     num_of_samples = data.shape[0]  # returns shape of matrix
-    t = np.linspace(start=0, stop=num_of_samples*sample_period, num=num_of_samples)
-
+    t = np.linspace(start=0, stop=num_of_samples *
+                    sample_period, num=num_of_samples)
 
     # Unwanted noise is filtered from the signals
     # for i in range(channels):
@@ -136,7 +137,7 @@ def read_and_format(string):
 
     # define new time array
     t_interp = np.linspace(start=0, stop=num_interp_samples *
-                        sample_period_interp, num=num_interp_samples)
+                           sample_period_interp, num=num_interp_samples)
 
     print(len(t))
     print(t_interp[-1])
@@ -171,13 +172,13 @@ def read_and_format(string):
     # data_interp[i] = data_interp[i] * np.kaiser(num_interp_samples, 1.5)
 
 
-
 # def doppler_find_average_velocity(data_interp, sample_period_interp):
 
-    pad_width= 2**12
+    pad_width = 2**12
 
     # find timeshift ----------------
-    time_shift_val = find_timeshift(data_interp[3], data_interp[4], sample_period_interp)/np.pi
+    time_shift_val = find_timeshift(
+        data_interp[3], data_interp[4], sample_period_interp)/np.pi
     print("phaseshift: ", time_shift_val, "pi")
     # print(int(np.pi-abs(time_shift_val)/sample_period_interp))
 
@@ -194,21 +195,21 @@ def read_and_format(string):
     IQ_freq = np.fft.fftfreq(n=len(combined_IQ), d=sample_period_interp)
     IQ_freq_shifted = np.fft.fftshift(IQ_freq)
 
-    print("lengths" , len(combined_IQ), len(IQ_freq))
+    print("lengths", len(combined_IQ), len(IQ_freq))
 
     # versjon 2
     doppler_spectrum_v2 = abs(np.fft.fft(combined_IQ))
 
-    spectrum_max_freq= IQ_freq[np.argmax(abs(doppler_spectrum_v2))]
+    spectrum_max_freq = IQ_freq[np.argmax(abs(doppler_spectrum_v2))]
     Average_velocity = spectrum_max_freq/160.87
 
     fig = plt.figure(figsize=(16/2.5, 9/2.5))
 
     # # ---------------- prossesed
     plt.subplot(2, 1, 1)
-    plt.title("Time domain signal")
-    plt.xlabel("Time [us]")
-    plt.ylabel("Voltage")
+    plt.title("Tidsdomene signal")
+    plt.xlabel("Tid [us]")
+    plt.ylabel("Spenning")
     plt.grid(True)
     # plt.xlim(0.2, .3)
     # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
@@ -219,15 +220,14 @@ def read_and_format(string):
     plt.legend(["Ch1", "Ch2", "Ch3", "Ch4", "Ch5"])
 
     plt.subplot(2, 1, 2)
-    plt.title("Doppler spectrum of signal")
-    plt.xlabel("Frequency [Hz]")
-    plt.ylabel("Power [dB]")
+    plt.title("Doppler spectrum av signal")
+    plt.xlabel("Frekvens [Hz]")
+    plt.ylabel("Effekt [dB]")
 
     # Average speed
     print("freq: ", spectrum_max_freq)
     print("max power: ", max(doppler_spectrum_v2))
 
-    
     # print("Average speed is: ", spectrum_max_freq/160.87)
     print(IQ_freq)
     plt.xlim(-1000, 1000)
@@ -239,6 +239,7 @@ def read_and_format(string):
     plt.show()
 
     return Average_velocity
+
 
 measured_avarage_velocity = []
 
@@ -326,8 +327,6 @@ print(measured_avarage_velocity)
 #     plt.plot(t, data)
 # # 1VA+1V 2.54Vdd, 500Hz
 # plt.legend(["Ch1", "Ch2", "Ch3"])
-
-
 
 
 # ------------------------------------- find angle ----------------------------------------
