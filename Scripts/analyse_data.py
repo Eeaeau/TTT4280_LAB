@@ -207,9 +207,9 @@ def read_and_format(string):
 
     # # ---------------- prossesed
     plt.subplot(2, 1, 1)
-    plt.title("Time domain signal")
-    plt.xlabel("Time [us]")
-    plt.ylabel("Voltage")
+    plt.title("Tidsdomene signal")
+    plt.xlabel("Tid [us]")
+    plt.ylabel("Spenning")
     plt.grid(True)
     # plt.xlim(0.2, .3)
     # plt.yticks(np.arange(min(data[:,0]), max(data[:,0])+1, 500))
@@ -220,9 +220,9 @@ def read_and_format(string):
     plt.legend(["Ch1", "Ch2", "Ch3", "Ch4", "Ch5"])
 
     plt.subplot(2, 1, 2)
-    plt.title("Doppler spectrum of signal")
-    plt.xlabel("Frequency [Hz]")
-    plt.ylabel("Power [dB]")
+    plt.title("Doppler spectrum av signal")
+    plt.xlabel("Frekvens [Hz]")
+    plt.ylabel("Effekt [dB]")
 
     # Average speed
     print("freq: ", spectrum_max_freq)
