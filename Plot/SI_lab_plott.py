@@ -62,30 +62,30 @@ plt.semilogx(f, ch21)
 plt.semilogx(f, ch11)
 plt.grid(True)
 
-plt.xlabel("Frequency (f)")
+plt.xlabel("Frekvens (f)")
 plt.ylabel("Amplitude (dB)")
 # plt.legend(['Channel 1 (V)', 'Channel 2 (V)', 'Channel 3 (V)'])
-plt.legend(['$|H_{in}(f)|$', '$|H_{out}(f)|$'], loc="lower left")
+plt.legend(['$|H_{in}(f)|$', '$|H_{out}(f)|$'], loc="best")
 # plt.legend(['$v_1 (t)$', '$v_2 (t)$'])
 plt.axhline(y=max(ch11)-3, color='red')
 plt.axvline(x=3.4315, color='red')
 plt.axvline(x=20912.79105182546, color='red')
 
-bbox = dict(boxstyle ="round", fc ="0.8") 
-arrowprops = dict( 
-    arrowstyle = "->", 
-    connectionstyle = "angle, angleA = 0, angleB = 90, rad = 10") 
+bbox = dict(boxstyle="round", fc="0.8", edgecolor="white", facecolor="none")
+arrowprops = dict(
+    arrowstyle="->",
+    connectionstyle="angle, angleA = 0, angleB = 90, rad = 10")
 offset = 30
 
-plt.annotate("$-3dB$", xy=(ch11.index(max(ch11)), max(ch11)-3), xytext = (2*offset, -offset/2), textcoords ='offset points', 
-            bbox = bbox, arrowprops = arrowprops)
+plt.annotate("$-3dB$", xy=(ch11.index(max(ch11)), max(ch11)-3), xytext=(2*offset, -offset/2), textcoords='offset points',
+             bbox=bbox, arrowprops=arrowprops)
 
-plt.annotate("$3.43$Hz", xy=(3.4315,0), xytext = (2*offset, -offset/2), textcoords ='offset points', 
-            bbox = bbox, arrowprops = arrowprops)
-plt.annotate("$20.91$kHz", xy=(20912.79,0), xytext = (-3*offset, -offset/2), textcoords ='offset points', 
-            bbox = bbox, arrowprops = arrowprops)
+plt.annotate("$3.43$Hz", xy=(3.4315, 0), xytext=(2*offset, -offset/2), textcoords='offset points',
+             bbox=bbox, arrowprops=arrowprops)
+plt.annotate("$20.91$kHz", xy=(20912.79, 0), xytext=(-3*offset, -offset/2), textcoords='offset points',
+             bbox=bbox, arrowprops=arrowprops)
 plt.xscale('log')
-plt.xlim(0,10**5)
+plt.xlim(0, 3*10**5)
 plt.ylim(-3)
 # plt.rcParams["legend.shadow"]
 
