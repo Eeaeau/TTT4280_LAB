@@ -43,12 +43,15 @@ def format_and_plot(string):
     # define new constants
     elements_removed = int(31250*.5)
 
-    sample_duration = num_of_samples/31250
+    sample_duration = num_of_samples/31250  # original sample periode
 
+    # number of samples after removing faulty samples
     num_of_samples_fixed = num_of_samples - elements_removed
 
+    # number of samples to upscale to
     num_interp_samples = int((num_of_samples_fixed)*1)
 
+    # new sample periode for interperated data
     sample_period_interp = (sample_duration-sample_period *
                             elements_removed)/num_interp_samples
 
@@ -62,19 +65,20 @@ def format_and_plot(string):
     t_interp = np.linspace(start=0, stop=num_interp_samples*sample_period_interp,
                            num=num_interp_samples)
 
+    # assign data to new data arrays
     for i in range(channels):
         data_fixed[i] = data[:, i][elements_removed:]
         data_interp[i] = np.interp(
             t_interp, t[:num_of_samples_fixed], data_fixed[i])
 
+    # removes DC component for each channel
     for i in range(channels):
-        # removes DC component for each channel
         data_interp[i] = signal.detrend(data_interp[i], axis=0)
 
     # ------------- Plotting - ---------------
-    pad_width = num_interp_samples+2*16
-
     fig = plt.figure(figsize=(16/1.8, 9/1.8))
+
+    pad_width = num_interp_samples+2*16
 
     # channel_names = ["Ch1@$0.993V$", "Ch2@$0.689V$","Ch3@$0.386V$", "Ch4@$11.6mV$"]
     channel_names = ["Ch1", "Ch2", "Ch3", "Ch4"]
@@ -89,8 +93,7 @@ def format_and_plot(string):
     for i in range(0, channels):
         plt.plot(t_interp, data_interp[i]/adc_res*max_voltage)
 
-    # 1VA+1V 2.54Vdd, 500Hz
-    # plt.legend(["Ch1", "Ch2", "Ch3", "Ch4"])
+    # 1V amplitude + 1V offset, 2.54Vdd
     plt.legend(channel_names, loc="center left")
 
     # power spectrum
