@@ -77,12 +77,14 @@ print("prosentage of transmission through finger",
 
 print("total reflected", total_light_reflected(1/delta[0], 0.015)[0])
 
-print("prosentage of transmission in 300mu bloodvein",
-      light_transmission(delta_bloodvein, 300*10**-6))
-print("prosentage of transmission in 300mu slice of tissue",
-      light_transmission(delta, 300*10**-6))
+thumb_thickness = 300*10**-6
 
-K = contrast(light_transmission(delta_bloodvein, 300*10**-6),
-             light_transmission(delta, 300*10**-6))
+print("prosentage of transmission in 300mu bloodvein",
+      light_transmission(delta_bloodvein, thumb_thickness))
+print("prosentage of transmission in 300mu slice of tissue",
+      light_transmission(delta, thumb_thickness))
+
+K = contrast(light_transmission(delta_bloodvein, thumb_thickness),
+             light_transmission(delta, thumb_thickness))
 
 print("kontrast", K)
