@@ -46,17 +46,18 @@ def import_and_format(path, fps):
     return t, data
 
 
-def analyse_accuracy(pulse_rgb):
+def analyse_accuracy(pulse_rgb, datatype):
     for ch in range(3):
-        SD = statistics.stdev(pulse_rgb[ch])
         Mean = statistics.mean(pulse_rgb[ch])
+        SD = statistics.stdev(pulse_rgb[ch])
 
-        print("Standard Deviation of channel " +
+        print("Mean of " + datatype + " in channel " +
+              colors[ch] + " is % s " % (Mean))
+        print("Standard Deviation of " + datatype + " in channel " +
               colors[ch] + " is % s " % (SD))
-        print("Mean of channel " + colors[ch] + " is % s " % (Mean))
 
 
-def find_SNR(ch, pulse, spectrum):
+def find_SNR(ch, pulse, spectrum, print_result=False):
 
     # ------------- SNR calculation ------------- #
     interestSignal = 0
@@ -83,23 +84,24 @@ def find_SNR(ch, pulse, spectrum):
     noiseAvg = noise / len(index)
 
     # Bruker ikke-skalerte amplitudeverdier (så de er ikke i dB)
-    SNR = (interestSignalAvg)/(noiseAvg)
+    SNR = interestSignalAvg/noiseAvg
 
     # ------------- print results ------------- #
+    if print_result:
+        print("Interessesnitt for fargekanal",
+              colors[ch], ":", interestSignalAvg)
+        print("Snitt av støy", noiseAvg)
+        print("SNR (snitt av interesse/snitt av noise) for fargekanal",
+              colors[ch], ":", SNR)
 
-    print("Interessesnitt for fargekanal",
-          colors[ch], ":", interestSignalAvg)
-    print("Snitt av støy", noiseAvg)
-    print("SNR (snitt av interesse/snitt av noise) for fargekanal",
-          colors[ch], ":", SNR)
-
-    return SNR
+    return float(SNR)
 
 
-def find_pulse(n_mesurements, output_SNR=True, plot=False):
+def find_pulse(n_mesurements, plot=False):
 
     # create list to store pulse values for each mesurement, seperated by pixel channel
     pulse_rgb = [[], [], []]
+    SNR = [[], [], []]
 
     for n in range(n_mesurements):
         t, data = import_and_format(
@@ -127,19 +129,20 @@ def find_pulse(n_mesurements, output_SNR=True, plot=False):
 
             pulse = spectrum[1][np.argmax(spectrum[0])]
 
-            if (output_SNR):
-                find_SNR(ch, pulse, spectrum)
+            SNR[ch].append(find_SNR(ch, pulse, spectrum))
 
             pulse_rgb[ch].append(pulse)
 
     if (plot):
         plt.show()
 
-    return pulse_rgb
+    return pulse_rgb, SNR
 
     # ------------------- main ------------------- #
 
 
-pulse_rgb = find_pulse(n_mesurements=5)
+pulse_rgb, SNR = find_pulse(n_mesurements=5)
 
-analyse_accuracy(pulse_rgb)
+analyse_accuracy(pulse_rgb, "pulse")
+print("\n")
+analyse_accuracy(SNR, "SNR")
