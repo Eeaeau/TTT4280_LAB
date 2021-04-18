@@ -7,7 +7,7 @@ import statistics
 
 # ---------- global constants ---------------- #
 
-path = "export/asta_puls.txt"
+path = "Lab4/export/asta_puls_reflektans_panne"
 fps = 40
 colors = ["r", "g", "b"]
 
@@ -105,7 +105,7 @@ def find_pulse(n_mesurements, plot=False):
 
     for n in range(n_mesurements):
         t, data = import_and_format(
-            "Lab4\export\seb_puls_transmitans_kald_pekefing"+str(n+1)+".txt", fps)
+            path+str(n+1)+".txt", fps)
 
         fc = 2  # Cut-off frequency of the filter
         w = fc / (fps / 2)  # Normalize the frequency
